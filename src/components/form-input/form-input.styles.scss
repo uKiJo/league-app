@@ -1,0 +1,94 @@
+@mixin shrinkLabel {
+    top: -16px;
+    font-size: 12px;
+    color: var(--primary-color);
+}
+
+.group {
+    position: relative;
+    margin: 4.5rem 0;
+
+    @media only screen and (max-width: 900px) {
+        margin: 3rem 0;
+    }
+
+
+
+    .form-input-label {
+        color: black;
+        font-size: 16px;
+        font-weight: normal;
+        position: absolute;
+        pointer-events: none;
+        left: 10px;
+        top: 10px;
+        transition: .3s ease all;
+
+        &.shrink {
+            @include shrinkLabel();
+        }
+    }
+
+    .pwd {
+        display: flex;
+        align-items: center;
+        background-color: #ecf0f1;
+        margin: 2.5rem 0;
+
+
+        .form-input {
+            background: none;
+            background-color: var(--color-grey-light);
+            color: black;
+            font-size: 1.8rem;
+            padding: 1rem;
+            display: block;
+            width: 100%;
+            border: none;
+            border-radius: 2rem;
+            
+
+            &:focus {
+                outline: none;
+            }
+
+            &:focus + .form-input-label {
+                @include shrinkLabel();
+            }
+        }
+
+       
+
+        input[type='password'] {
+            letter-spacing: 0.3em;
+        }
+
+        svg {
+            cursor: pointer;
+        }
+
+        .clear-eye,
+        .barred-eye {
+            width: 20px;
+            height: 20px;
+            fill: var(--primary-color);
+        }
+
+        .clear-eye {
+            display: block;
+        }
+
+        .barred-eye {
+            display: none;
+        }
+    }
+
+    .show {
+        display: block;
+        padding-right: 15px;
+    }
+
+    .hide {
+        display: none;
+    }
+}

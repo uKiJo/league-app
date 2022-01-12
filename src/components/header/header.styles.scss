@@ -1,0 +1,44 @@
+.header {
+    display: flex;
+    max-height: 70px;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    position: fixed;
+    font-weight: bolder;
+    
+
+    @media only screen and (max-width: 1025px) {
+        width: 100%;
+        // background-color: var(--primary-color);
+        // background-image: url('./header-bg.svg');
+        // background: linear-gradient(to right, #001220, #022846 75%);
+        background: radial-gradient(#022846, #001220);
+        box-shadow: 0 1px 5px black;
+        // background-image: linear-gradient(to left, #333, #eee 75%);
+        
+    }
+
+
+    .option {
+        color: var(--color-grey-light);
+        text-decoration: none;
+        font-size: 2rem;
+        padding: 3rem 2rem;
+        transition: all .2s;
+        cursor: pointer;
+        
+        &:first-child {
+            flex: 1;
+            margin-left: 5rem;
+        }
+
+        &:last-child {
+            margin-right: 3rem;;
+        }
+
+        &:hover {
+            color: var(--secondary-color);
+        }
+    }
+}
