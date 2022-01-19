@@ -7,7 +7,17 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from 'react-query/devtools';
 
-const queryClient = new QueryClient();
+
+const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
+const queryClient = new QueryClient({
+  defaultOptions: {
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+    staleTime: twentyFourHoursInMs,
+  }
+});
 
 ReactDOM.render(
   <BrowserRouter>

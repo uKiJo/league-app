@@ -1,33 +1,49 @@
-import React from "react";
+import React, {useEffect} from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { tableState, teamsState } from "../../recoil/atoms/teams.atom";
+import { tableStats } from "../../recoil/selectors/selec";
 
-import './table.styles.scss';
+import "./table.styles.scss";
 
-const Table = ({ game }) => {
-  const { homeTeam, awayTeam } = game;
+const Table = () => {
+  // const clubs = useRecoilValue(tableState);
+  const table = useRecoilValue(tableState);
+
+  
+
+  
+
+  // const sorted = arrayForSort.sort((a, b) => a.point - b.point)
+
+  
+
+  useEffect(() => {
+    console.log('table is rendered');
+    console.log(table);
+    
+  }, [table])
+
+
 
   return (
-    <div className="game">
-      <div className="game-detail">
-        <div className="home-team-details">
-          <span> {homeTeam.name} </span>
-          <img
-            className="img"
-            src={homeTeam.logo_path}
-            alt={`${homeTeam.short_code}`}
-          />
-        </div>
-        <input className="goal-input" type="text" />
-        <input className="goal-input" type="text" />
-        <div className="away-team-details">
-          <img
-            className="img"
-            src={awayTeam.logo_path}
-            alt={`${awayTeam.short_code}`}
-          />
-          <span> {awayTeam.name} </span>
-        </div>
-      </div>
-    </div>
+    <table>
+      <tr>
+        <th>Ranking</th>
+        <th>Team</th>
+        <th>Points</th>
+      </tr>
+
+      {table.map((team) => (
+        <tr>
+          <th> <img src={team.logo_path} alt="" />   {team.name} </th>
+         
+          
+          
+          <th> {team.point !== 0 && team.point ? team.point : 0} </th>
+          <th></th>
+        </tr>
+      ))}
+    </table>
   );
 };
 

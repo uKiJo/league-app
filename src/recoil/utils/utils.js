@@ -1,33 +1,20 @@
 export const generateFirstDay = (arr) => {
   var fixture = [];
-  var day = [];
-
+  
   let daysNum = (arr.length/2) -1;
 
-  while (arr.length) {
-    let game = {};
-    //pick a random index
-    let randomIdx = Math.floor(Math.random() * arr.length);
-    let homeTeam = arr[randomIdx];
-    game = { ...game, homeTeam };
-    arr = [...arr.slice(0, randomIdx), ...arr.slice(randomIdx + 1)];
-    let randomIdx2 = Math.floor(Math.random() * arr.length);
-    let awayTeam = arr[randomIdx2];
-    game = { ...game, awayTeam };
-    arr = [...arr.slice(0, randomIdx2), ...arr.slice(randomIdx2 + 1)];
-
-    day = [...day, game];
-  }
+  let day = firstDay(arr);
 
   fixture = [...fixture, day];
 
   let gw = 0;
+
   while (gw !== daysNum) {
     
-    let rest = patternOne(fixture);
-    fixture = [...fixture, rest];
-    let rest2 = patternTwo(fixture);
-    fixture = [...fixture, rest2];
+    let evenDays = patternOne(fixture);
+    fixture = [...fixture, evenDays];
+    let oddDays = patternTwo(fixture);
+    fixture = [...fixture, oddDays];
 
     gw++;
   }
@@ -35,80 +22,114 @@ export const generateFirstDay = (arr) => {
   return fixture;
 };
 
+const firstDay = (arr) => {
+
+  let day = [];
+
+  while (arr.length) {
+    let game = {};
+    //pick a random index
+
+    let randomIdx = Math.floor(Math.random() * arr.length);
+    let homeTeam = arr[randomIdx];
+    // game = { ...game, homeTeam };
+    arr = [...arr.slice(0, randomIdx), ...arr.slice(randomIdx + 1)];
+    let randomIdx2 = Math.floor(Math.random() * arr.length);
+    let awayTeam = arr[randomIdx2];
+    game = { ...game, id: getId(), homeTeam, awayTeam };
+    arr = [...arr.slice(0, randomIdx2), ...arr.slice(randomIdx2 + 1)];
+
+    day = [...day, game];
+  
+  }
+
+  return day;
+}
+
 const patternOne = (arr) => {
   var day = [];
-  let game1 = {};
-  let game2 = {};
+  // let game1 = {};
+  // let game2 = {};
   let rest = [];
-  let lastGame = {};
+  // let lastGame = {};
   let lastDay = arr[arr.length - 1];
 
-  game1 = {
-    ...game1,
+  let game1 = {
+    id: getId(),
     homeTeam: lastDay[1].awayTeam,
     awayTeam: lastDay[0].homeTeam,
   };
-  game2 = {
-    ...game2,
+
+  let game2 = {
+    id: getId(),
     homeTeam: lastDay[2].awayTeam,
     awayTeam: lastDay[0].awayTeam,
   };
-  lastGame = {
-    ...lastGame,
-    homeTeam: lastDay[lastDay.length - 1].homeTeam,
-    awayTeam: lastDay[lastDay.length - 2].homeTeam,
-  };
 
   for (let i = 3; i < lastDay.length; i++) {
-    let game = {};
-    game = {
-      ...game,
+    
+    let game = {
+      id: getId(),
       homeTeam: lastDay[i].awayTeam,
       awayTeam: lastDay[i - 2].homeTeam,
     };
     rest = [...rest, game];
   }
 
-  day = [...day, game1, game2, ...rest, lastGame];
+  let lastGame = {
+    id: getId(),
+    homeTeam: lastDay[lastDay.length - 1].homeTeam,
+    awayTeam: lastDay[lastDay.length - 2].homeTeam,
+  };
 
-  return day;
+  
+
+  
+
+  return [...day, game1, game2, ...rest, lastGame];
 };
 
 const patternTwo = (arr) => {
   var day = [];
-  let game1 = {};
-  let game2 = {};
+  // let game1 = {};
+  // let game2 = {};
   let rest = [];
-  let lastGame = {};
+  // let lastGame = {};
   let lastDay = arr[arr.length - 1];
 
-  game1 = {
-    ...game1,
+  let game1 = {
+    id: getId(),
     homeTeam: lastDay[0].awayTeam,
     awayTeam: lastDay[1].homeTeam,
   };
-  game2 = {
-    ...game2,
+  let game2 = {
+    id: getId(),
     homeTeam: lastDay[0].homeTeam,
     awayTeam: lastDay[2].homeTeam,
   };
-  lastGame = {
-    ...lastGame,
-    homeTeam: lastDay[lastDay.length - 2].awayTeam,
-    awayTeam: lastDay[lastDay.length - 1].awayTeam,
-  };
 
   for (let i = 3; i < lastDay.length; i++) {
-    let game = {};
-    game = {
-      ...game,
+    let game = {
+      id: getId(),
       homeTeam: lastDay[i - 2].awayTeam,
       awayTeam: lastDay[i].homeTeam,
     };
     rest = [...rest, game];
   }
 
-  day = [...day, game1, game2, ...rest, lastGame];
+  let lastGame = {
+    id: getId(),
+    homeTeam: lastDay[lastDay.length - 2].awayTeam,
+    awayTeam: lastDay[lastDay.length - 1].awayTeam,
+  };
 
-  return day;
+  
+
+  return [...day, game1, game2, ...rest, lastGame];
 };
+
+let i = 0;
+
+function getId(){
+  return i++;
+}

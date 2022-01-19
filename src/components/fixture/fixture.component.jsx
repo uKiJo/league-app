@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "react-query";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { Link } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import { fetchData } from "../../firebase/firebase";
-import { fixtureState, teamsState } from "../../recoil/atoms/teams.atom";
+import { fixtureState, teamsState, tableState } from "../../recoil/atoms/teams.atom";
 import { generateFirstDay } from "../../recoil/utils/utils";
 
-import Game from "../fixture/fixture.component.jsx";
+import Game from "../game/game.component";
 import Table from "../table/table.component";
 
 import "./fixture.styles.scss";
@@ -13,18 +14,32 @@ import "./fixture.styles.scss";
 const Fixture = () => {
   const [fixture, setFixture] = useRecoilState(fixtureState);
   const [teams, setTeams] = useRecoilState(teamsState);
+  const [table, setTable] = useRecoilState(tableState);
+  
   const [animate, setAnimate] = useState(null);
 
-  // const teams = useRecoilValue(teamsState);
+  useEffect(() => {
+    console.log('fixture component rendered', table);
+    
+  }, [table])
 
-  const { data, isLoading, isError } = useQuery("data", fetchData);
-  if (isLoading) return <div>Loading</div>;
+  const { data, isLoading, isError, isFetched } = useQuery("data", fetchData);
+  if (isLoading) return <div>Loading...</div>;
   if (isError) return alert("something went wrong!");
-
+  if (isFetched && !table.length) {
+    const tableData = data.teams;
+    const standing = tableData.map(el => (
+      {...el, point: 0, pointsArr: [], goal: 0}
+    ))
+    setTable(standing);} 
   // const teamsData = data.teams;
 
   setTeams(data.teams);
-  console.log(teams);
+  
+  
+  
+
+
 
   const func = () => {
     const generatedFixture = generateFirstDay(teams);
@@ -35,9 +50,12 @@ const Fixture = () => {
     setTimeout(() => setAnimate(false), 300);
   };
 
-  console.log(fixture);
   return (
     <div className="container">
+      <Link to="/table">
+        <button>table</button>
+      </Link>
+      <Table />
       <div className="bg">
         <div className={`${animate ? "animate" : ""} fixture`}>
           <button onClick={func}>generate</button>
@@ -45,7 +63,7 @@ const Fixture = () => {
           {fixture.map((day) => (
             <div key={fixture.indexOf(day)} className="day">
               {day.map((game) => (
-                <Table key={day.indexOf(game)} game={game} />
+                <Game key={game.id} game={game} />
               ))}
             </div>
           ))}

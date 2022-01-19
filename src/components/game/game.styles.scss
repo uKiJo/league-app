@@ -7,12 +7,13 @@
     border-bottom: 1px solid var(--color-grey-light);
 
     .game-detail {
-        width: 35rem;
+        width: 40rem;
         display: flex;
         font-weight: bolder;
-        
+        align-items: center;
+
         .home-team-details {
-            width: 40%;
+            width: 135px;
             display: flex;
             align-items: center;
 
@@ -28,7 +29,7 @@
         }
 
         .away-team-details {
-            width: 40%;
+            width: 13.5rem;
             display: flex;
             align-items: center;
 
@@ -45,19 +46,32 @@
             
         }
 
-        
-
-
-        .goal-input {
-            width: 3rem;
-            height: 3rem;
-            border: none;
+        .score {
+            display: flex;
+            align-items: center;
             background-color: var(--primary-color);
-            color: var(--color-grey-light);
-            outline: none;
-            text-align: center;
-            font-weight: bolder;
+            border-radius: .2rem;
+            overflow: hidden;
+
+            .goal-input {
+                width: 3rem;
+                height: 3rem;
+                border: none;
+                background-color: var(--primary-color);
+                color: var(--color-grey-light);
+                outline: none;
+                text-align: center;
+                font-weight: bolder;
+            }
+
+            .separator {
+                font-size: 1.4rem;
+                // background-color: var(--primary-color);
+                color: white;
+                font-weight: bolder;
+            }
         }
+        
     }
 
     

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Node } from "react";
 
 import SignIn from "./components/sign-in/sign-in.component";
 import SignUp from "./components/sign-up/sign-up.component";
 import HomePage from "./pages/homepage/homepage.component";
 import PremierLeague from "./pages/premier-league/premier-league.component";
 import Fixture from "./components/fixture/fixture.component";
+import Table from "./components/table/table.component";
 
 import { auth } from "./firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -19,9 +20,9 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 
 
 
+
 function App() {
 
-  
 
   const [currentUser, setCurrentUser] = useState(null);
   let navigate = useNavigate();
@@ -37,6 +38,8 @@ function App() {
         console.log(user.uid);
         navigate('/')
       }
+
+      
     });
 
     return () => {
@@ -51,6 +54,7 @@ function App() {
       <Route path="signup" element={<SignUp />} />
       <Route path="pl" element={<PremierLeague />} />
       <Route path="custom" element={<Fixture />} />
+      <Route path='table' element={<Table />} />
     </Routes>
   );
 }

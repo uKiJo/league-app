@@ -1,4 +1,7 @@
 import { atom } from "recoil";
+import { recoilPersist } from "recoil-persist";
+
+const { persistAtom } = recoilPersist();
 
 export const teamsState = atom({
     key: 'teamsState',
@@ -8,4 +11,13 @@ export const teamsState = atom({
 export const fixtureState = atom ({
     key: 'fixtureState',
     default: [],
+    effects_UNSTABLE: [persistAtom],
 });
+
+
+
+export const tableState = atom({
+    key: 'tableState',
+    default: [],
+    effects_UNSTABLE: [persistAtom],
+})

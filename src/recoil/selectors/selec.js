@@ -1,7 +1,16 @@
-import { getDoc } from "firebase/firestore";
 import { selector } from "recoil";
+import { tableState } from "../atoms/teams.atom";
 
 
-const selectorr = selector({
-    
+
+export const tableStats = selector({
+    key: 'tableStats',
+    get: ({get}) => {
+        const table = get(tableState);
+
+        return table.sort((a, b) =>  {
+            return a.id - b.id;
+        })
+        
+    }
 })
