@@ -11,7 +11,7 @@ export const teamsState = atom({
 export const fixtureState = atom ({
     key: 'fixtureState',
     default: [],
-    effects_UNSTABLE: [persistAtom],
+    // effects_UNSTABLE: [persistAtom],
 });
 
 
@@ -19,5 +19,10 @@ export const fixtureState = atom ({
 export const tableState = atom({
     key: 'tableState',
     default: [],
-    effects_UNSTABLE: [persistAtom],
+    // effects_UNSTABLE: [persistAtom],
+})
+
+export const myLeaguesState = atom({
+    key: 'myLeaguesState',
+    default: [],
 })

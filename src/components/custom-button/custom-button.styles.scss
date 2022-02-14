@@ -1,14 +1,11 @@
 .custom-button {
     font-weight: bold;
     font-size: 1.6rem;
-    // color: var(--color-grey-light);
-    color: black;
+    color: var(--color-grey-light);
     padding: 1rem;
     border-radius: .2rem;
     border: none;
     background-color: transparent;
-    // background-color: blue;
-    // background-color: var(--secondary-color);
     width: 100%;
     cursor: pointer;
     transition: all .2s;

@@ -1,0 +1,26 @@
+.league-list-item {
+    display: flex;
+    margin: 2rem 0;
+    padding: 1rem;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--color-grey-dark);
+    // border-top: 1px solid var(--color-grey-dark);
+
+    .league-name {
+        font-size: 2rem;
+    }
+
+    .list-button {
+        button {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border: none;
+            background-color: var(--secondary-color);
+            border-radius: .2rem;
+            color: var(--color-grey-medium);
+            font-weight: bold;
+        }
+    }
+}

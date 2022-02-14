@@ -1,0 +1,124 @@
+.hide-setting-box {
+    display: none;
+}
+
+.settings-box {
+    box-shadow: rgba(99, 99, 99, 0.4) 5px 5px 10px;
+    background-color: var(--color-grey-light);
+    width: 100%;
+    border-radius: .2rem;
+    margin-top: 3rem;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+
+    .league-name-input {
+        display: flex;
+        align-items: center;
+        padding-bottom: 3rem;
+
+        .title {
+            margin-right: 2rem;
+        }
+
+
+        input {
+            border: none;
+            background-color: inherit;
+
+            &:focus {
+                background-color: var(--color-grey-medium);
+                outline: none;
+            }
+        }
+
+        .bounce {
+            outline: 0;
+            border-color: red;
+            // animation-name: bounce;
+            // animation-duration: .5s;
+            // animation-delay: 0.25s;
+        }
+
+        .pencil-icon {
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+            // background-color: var(--color-grey-medium);
+        }
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: flex-end;
+
+        .generate-button {
+            border: none;
+            padding: 1.5rem 2rem;
+            // background-color: var(--secondary-color);
+            border: 2px solid var(--secondary-color);
+            color: var(--secondary-color);
+            font-size: 1.4rem;
+            font-weight: bold;
+            border-radius: .2rem;
+            cursor: pointer;
+            transition: all .2s;
+
+            &:not(:last-child) {
+                margin-right: 2rem;
+            }
+
+            &:hover {
+                background-color: var(--secondary-color);
+                color: var(--color-grey-medium);
+            }
+        }
+
+
+
+    }
+
+}
+
+//animations
+@keyframes bounce {
+    0% {
+        transform: translateX(0px);
+        timing-function: ease-in;
+    }
+
+    37% {
+        transform: translateX(5px);
+        timing-function: ease-out;
+    }
+
+    55% {
+        transform: translateX(-5px);
+        timing-function: ease-in;
+    }
+
+    73% {
+        transform: translateX(4px);
+        timing-function: ease-out;
+    }
+
+    82% {
+        transform: translateX(-4px);
+        timing-function: ease-in;
+    }
+
+    91% {
+        transform: translateX(2px);
+        timing-function: ease-out;
+    }
+
+    96% {
+        transform: translateX(-2px);
+        timing-function: ease-in;
+    }
+
+    100% {
+        transform: translateX(0px);
+        timing-function: ease-in;
+    }
+}

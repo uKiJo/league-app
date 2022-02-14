@@ -1,14 +1,29 @@
-import React from 'react'
-import CustomButton from '../../components/custom-button/custom-button.component';
+import React from "react";
 
-import './premier-league.styles.scss';
+import Fixture from "../../components/fixture/fixture.component";
+import Header from "../../components/header/header.component";
+import Overview from "../../components/overview/overview.component";
+import Tab from "../../components/tab/tab.component";
+import Table from "../../components/table/table.component";
 
-const PremierLeague = () => {
-    return (
-        <div className='generate-button'>
-            <CustomButton children='generate' />
-        </div>
-    )
-}
+import "./premier-league.styles.scss";
+
+const PremierLeague = ({currentUser}) => {
+
+  return (
+    <div className="league-page">
+      <Header currentUser={currentUser} />
+      <div className="content">
+        <Tab
+          tabs={[
+            { title: "overview", render: () => <Overview /> },
+            { title: "table", render: () => <Table /> },
+            { title: "fixture", render: () =>  <Fixture currentUser={currentUser} /> },
+          ]}
+        />
+      </div>
+    </div>
+  );
+};
 
 export default PremierLeague;

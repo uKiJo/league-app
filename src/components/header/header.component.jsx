@@ -10,16 +10,17 @@ const Header = ({currentUser}) => {
     return (
         <div className='header'>
             <Link className='option' to='/'>Logo</Link>
+            
 
             {
-                currentUser && <div className='option'>My leagues</div> 
+                currentUser && <Link className='option' to='/myleagues'>My Leagues</Link>
 
             }
 
             {
                 currentUser ?
                 <div className='option' onClick={() => signOut(auth)} >Sign out</div> :
-                <Link className='option' to='signin'>Sign in</Link>
+                <Link className='option' to='/signin'>Sign in</Link>
             }
             
             <Link className='option' to='signup'>Sign up</Link>

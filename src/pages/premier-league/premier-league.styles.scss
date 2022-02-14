@@ -1,5 +1,68 @@
-.generate-button {
-    background-color: var(--secondary-color);
-    width: 200px;
-    
+.content {
+    // background-image: url('.//table-bg2.svg');
 }
+
+// .league-content {
+//     background-image: url('.//table-bg2.svg');
+//     // background-attachment: fixed;
+//     // background-size: cover;
+//     margin: 2rem auto;
+//     width: 70%;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     background-color: var(--color-grey-medium);
+//     border-radius: .2rem;
+//     padding: 3rem;
+
+//     .tab-options {
+//         width: 100%;
+//         display: flex;
+//     }
+
+//     .tablinks {
+//         font-family: 'Lato', sans-serif;
+//         border: none;
+//         padding: 2rem 4rem;
+//         cursor: pointer;
+//         flex: 1;
+//         font-size: 1.6rem;
+//         border-bottom: 3px solid transparent;
+//         transition: all .2s ease-in;
+
+//         &:hover {
+//             background-color: var(--color-grey-dark);
+//         }
+//     }
+    
+//     .active-button {
+//         font-family: 'Lato', sans-serif;
+//         color: var(--secondary-color);
+//         font-size: 1.6rem;
+//         // font-weight: bolder;
+//         padding: 2rem 4rem;
+//         cursor: pointer;
+//         border-bottom: 3px solid var(--secondary-color);
+//         transition: all .2s ease-in;
+//     }
+    
+//     .active {
+//         display: block;
+//         width: 80%;
+//     }
+    
+//     .tab {
+//         display: none;
+//     }
+
+
+//     .tab,
+//     .active {
+//         h1 {
+//             padding-left: 2rem;
+//             margin: 2rem 0;
+//             color: var(--primary-color);
+//             font-size: 3rem;
+//         }
+//     }
+// }

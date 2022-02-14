@@ -1,49 +1,50 @@
-import React, {useEffect} from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { tableState, teamsState } from "../../recoil/atoms/teams.atom";
-import { tableStats } from "../../recoil/selectors/selec";
+import React from "react";
+
+import { useRecoilValue } from "recoil";
+
+import { tableState } from "../../recoil/atoms/teams.atom";
+
 
 import "./table.styles.scss";
 
-const Table = () => {
-  // const clubs = useRecoilValue(tableState);
+const Table = ({isMinified}) => {
+
   const table = useRecoilValue(tableState);
 
   
 
-  
-
-  // const sorted = arrayForSort.sort((a, b) => a.point - b.point)
-
-  
-
-  useEffect(() => {
-    console.log('table is rendered');
-    console.log(table);
-    
-  }, [table])
-
-
-
   return (
-    <table>
+    <div className="table-content">
+      <table>
       <tr>
         <th>Ranking</th>
-        <th>Team</th>
+        <th className="team">Team</th>
+        <th>Played</th>
+        <th className={`${isMinified ? 'hide-prop' : ''}`}>Won</th>
+        <th className={`${isMinified ? 'hide-prop' : ''}`}>Drawn</th>
+        <th className={`${isMinified ? 'hide-prop' : ''}`}>Lost</th>
+        <th className={`${isMinified ? 'hide-prop' : ''}`}>GF</th>
+        <th className={`${isMinified ? 'hide-prop' : ''}`}>GA</th>
+        <th>GD</th>
         <th>Points</th>
       </tr>
 
       {table.map((team) => (
-        <tr>
-          <th> <img src={team.logo_path} alt="" />   {team.name} </th>
-         
-          
-          
-          <th> {team.point !== 0 && team.point ? team.point : 0} </th>
-          <th></th>
+        <tr key={team.id}>
+          <th>{table.indexOf(team) + 1}</th>
+          <th className={`${isMinified ? 'reduce-font' : ''} name`}> <img src={team.logo_path} alt="logo" />   {team.name} </th>
+          <th> {team.w + team.d + team.l} </th>
+          <th className={`${isMinified ? 'hide-prop' : ''}`}> {team.w} </th>
+          <th className={`${isMinified ? 'hide-prop' : ''}`}> {team.d} </th>
+          <th className={`${isMinified ? 'hide-prop' : ''}`}> {team.l} </th>
+          <th className={`${isMinified ? 'hide-prop' : ''}`}> {team.goals} </th>
+          <th className={`${isMinified ? 'hide-prop' : ''}`}> {team.ga}</th>
+          <th> {team.goals - team.ga}</th>
+          <th className="points"> {team.points } </th>
         </tr>
       ))}
     </table>
+    </div>
   );
 };
 

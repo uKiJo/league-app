@@ -3,10 +3,10 @@
     max-height: 70px;
     justify-content: center;
     align-items: center;
-    width: 80%;
-    position: fixed;
+    // width: 80%;
+    // position: fixed;
     font-weight: bolder;
-    
+    background-color: var(--primary-color);
 
     @media only screen and (max-width: 1025px) {
         width: 100%;

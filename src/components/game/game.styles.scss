@@ -4,23 +4,23 @@
     align-items: center;
     padding: 1rem;
     color: var(--primary-color);
-    border-bottom: 1px solid var(--color-grey-light);
+    border-bottom: 1px solid var(--color-grey-dark);
 
     .game-detail {
         width: 40rem;
         display: flex;
-        font-weight: bolder;
+        font-weight: bold;
         align-items: center;
 
         .home-team-details {
-            width: 135px;
+            width: 18rem;
             display: flex;
             align-items: center;
 
             span {
                 flex: 1;
                 text-align: end;
-                font-size: 1.2rem;
+                font-size: 1.4rem;
             }
 
             .img {
@@ -29,14 +29,14 @@
         }
 
         .away-team-details {
-            width: 13.5rem;
+            width: 18rem;
             display: flex;
             align-items: center;
 
             span {
                 flex: 1;
                 text-align: start;
-                font-size: 1.2rem;
+                font-size: 1.4rem;
             }
 
             .img {

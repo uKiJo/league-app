@@ -15,7 +15,8 @@
 
     .container {
         width: 100%;
-        
+        display: flex;
+        flex-direction: column;
         .intro__container {
             
             display: flex;
@@ -116,7 +117,7 @@
 }
 
 .button-link {
-    padding: 2rem 4rem;
+    padding: 1.5rem 4rem;
     cursor: pointer;
     font-weight: bolder;
     border: none;

@@ -20,7 +20,7 @@ const SignInLoading = LoadingHoc(CustomButton);
 const SignIn = () => {
 
   const [isLoading, setIsLoading] = useRecoilState(userState);
-
+  const [error, setError] = useState('');
   const [state, setState] = useState({
     email: "",
     password: "",
@@ -55,7 +55,14 @@ const SignIn = () => {
       
       console.log(isLoading)
     }catch(error) {
-      
+      console.log(error.message)
+      console.log(error.code)
+      console.log(error.name)
+      setIsLoading(false);
+      if(error.code === 'auth/wrong-password') {
+        setError('Wrong password!!')
+      } else if (error.code === 'auth/too-many-requests') { setError('You are restricted from logging in temporarily due to many failed login attempts. ')}
+      // auth/user-not-found 
     }
     
   }
@@ -96,6 +103,8 @@ const SignIn = () => {
                 showPassword={showPassword}
                 required
               />
+
+              <p> {error} </p>
 
               <div className="buttons">
                 {/* <CustomButton children='Sign in' /> */}

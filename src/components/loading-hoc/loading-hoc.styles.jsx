@@ -11,8 +11,8 @@ export const SpinnerOverlay = styled.div`
 
 export const SpinnerContainer = styled.div`
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: ${props => props.width || '20px'};
+  height: ${props => props.width || '20px'};
   border: 3px solid var(--color-grey-light);
   border-radius: 50%;
   border-top-color: var(--secondary-color);

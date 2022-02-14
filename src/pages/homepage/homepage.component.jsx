@@ -8,7 +8,7 @@ import illu_1 from "./img/illustration.svg";
 
 import Header from "../../components/header/header.component";
 
-const HomePageButton = ({ children, isCustom, route }) => {
+const HomePageButton = ({ children, route }) => {
   return (
     <Link className="button-link" to={`${route}`}>
       {children}
@@ -19,11 +19,12 @@ const HomePageButton = ({ children, isCustom, route }) => {
 const HomePage = ({currentUser}) => {
   return (
     <div className="homepage">
+      
       <div className="container">
+        
         <Header currentUser={currentUser} />
-
         <div className="intro__container">
-          <div className="intro__section">
+          <section className="intro__section">
             <div className="intro__content">
               <h1>Create your own football league.</h1>
               <p>
@@ -33,10 +34,9 @@ const HomePage = ({currentUser}) => {
               <div className="intro__buttons">
                 <HomePageButton
                   route="/custom"
-                  isCustom
                   children="Custom league"
                 />
-                <HomePageButton route="/pl" children="Premier league" />
+                <HomePageButton route={currentUser ? '/create' : '/signin'} children="Create Premier league" />
               </div>
             </div>
 
@@ -45,7 +45,7 @@ const HomePage = ({currentUser}) => {
             <div className="intro__img">
               <img src={illu_1} alt="illustration" />
             </div>
-          </div>
+          </section>
         </div>
       </div>
     </div>

@@ -1,19 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { useParams } from "react-router-dom";
 
 import { useRecoilState, useRecoilValue } from "recoil";
+import { updateFix } from "../../firebase/firebase";
 
-import {
-  fixtureState,
-  tableState,
-  teamsState,
-} from "../../recoil/atoms/teams.atom";
+import { fixtureState, tableState } from "../../recoil/atoms/teams.atom";
 
 import "./game.styles.scss";
+import { updateFixture, updateTable } from "./update";
 
-const Game = ({ game }) => {
+const Game = ({ game, currentUser }) => {
+  const param = useParams();
+  const route = param.leagueId;
+
+  const homeGoal = game.homeTeam.goal;
+  const awayGoal = game.awayTeam.goal;
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(({ data, dayIdx, route }) =>
+    updateFix(currentUser, data, dayIdx, route)
+  );
+
   const { id, homeTeam, awayTeam } = game;
-
-  
 
   const [fixture, setFixture] = useRecoilState(fixtureState);
 
@@ -24,227 +34,91 @@ const Game = ({ game }) => {
   const dayIdx = int.findIndex((e) => e !== -1);
   const gameIdx = int.find((e) => e !== -1);
 
-  const homeTeamIdx = table.findIndex((team) => team.name === homeTeam.name);
-  const awayTeamIdx = table.findIndex((team) => team.name === awayTeam.name);
-
-  const hometeamGoal = fixture[dayIdx][gameIdx].homeTeam.goal;
-  const awayteamGoal = fixture[dayIdx][gameIdx].awayTeam.goal;
-
   const handleHomeScore = ({ target: { value } }) => {
+    const type = "homeTeam";
     if (!isNaN(value)) {
-      const number = parseInt(value);
+      console.log(fixture[0])
+      // const number = parseInt(value)
+      const updateSelectedDay = updateFixture(
+        fixture,
+        dayIdx,
+        gameIdx,
+        value,
+        homeTeam,
+        type
+      );
 
+      var awayGoal = updateSelectedDay[dayIdx][gameIdx].awayTeam.goal;
+      console.log(awayGoal)
       
-      console.log('day: ', dayIdx, 'game: ', gameIdx)
-      const selectedGame = fixture[dayIdx][gameIdx];
-      const selectedDay = fixture[dayIdx];
-      console.log(selectedGame);
-      console.log(selectedDay);
-
-      const updateSelectedGame = replaceItemAtIndex(selectedDay, gameIdx, {
-        ...selectedGame,
-        homeTeam: {
-          ...homeTeam,
-          goal: value,
-        }
-      } )
-
-      const updateSelectedDay = replaceItemAtIndex(fixture, dayIdx, updateSelectedGame);
-
-
+      console.log(updateSelectedDay)
       setFixture(updateSelectedDay);
+    
+      // if the away input field exist, mutate!
+      if ((awayGoal || awayGoal === '') && (value || value === '')) {
+       
+        queryClient.setQueryData(
+          ["league", currentUser, route],
+          updateSelectedDay
+        ); //mutate the cache directly so no unnecessary fetching query are made.
+          
+        mutation.mutate({
+          data: updateSelectedDay[dayIdx],
+          dayIdx: dayIdx,
+          route: route,
+        }); //mutate the database
+      }
       
-
-      console.log(updateSelectedGame)
     }
 
-    
-
-    const reducer = (previousValue, currentValue) =>
-        previousValue + currentValue;
-
-    if (value && awayteamGoal) {
-       //reducer function
-
-      const pointsArrh = table[homeTeamIdx].pointsArr;
-      console.log(pointsArrh);
-      const pointsh = replaceItemAtIndex(
-        pointsArrh,
-        dayIdx,
-        value > awayteamGoal ? 3 : value < awayteamGoal ? 0 : 1
-      );
-       
-
-      const updateHome = replaceItemAtIndex(table, homeTeamIdx, {
-        ...table[homeTeamIdx],
-        pointsArr: pointsh,
-        point: pointsh.filter((e) => e).reduce(reducer, 0),
-      });
-
-      const pointsArra = updateHome[awayTeamIdx].pointsArr;
-
-      const pointsa =  replaceItemAtIndex(
-        pointsArra,
-        dayIdx,
-        value > awayteamGoal ? 0 : value < awayteamGoal ? 3 : 1
-      );
-       
-
-      const updateAway = replaceItemAtIndex(updateHome, awayTeamIdx, {
-        ...updateHome[awayTeamIdx],
-        pointsArr: pointsa,
-        point: pointsa.filter((e) => e).reduce(reducer, 0),
-      });
-
-      const sortedTable = updateAway.sort((a, b) => b.point - a.point);
-
-      setTable(sortedTable);
-    } else {
-      
-      const pointsArrh = table[homeTeamIdx].pointsArr;
-      console.log(pointsArrh);
-      const pointsh = replaceItemAtIndex(
-        pointsArrh,
-        dayIdx,
-        0
-      );
-       
-
-      const updateHome = replaceItemAtIndex(table, homeTeamIdx, {
-        ...table[homeTeamIdx],
-        pointsArr: pointsh,
-        point: pointsh.filter((e) => e).reduce(reducer, 0),
-      });
-
-      const pointsArra = updateHome[awayTeamIdx].pointsArr;
-
-      const pointsa =  replaceItemAtIndex(
-        pointsArra,
-        dayIdx,
-        0
-      );
-       
-
-      const updateAway = replaceItemAtIndex(updateHome, awayTeamIdx, {
-        ...updateHome[awayTeamIdx],
-        pointsArr: pointsa,
-        point: pointsa.filter((e) => e).reduce(reducer, 0),
-      });
-
-      const sortedTable = updateAway.sort((a, b) => b.point - a.point);
-
-      setTable(sortedTable);
-      }
-    
+    const update = updateTable(fixture, table, value, game, awayGoal, type);
+    setTable(update);
   };
 
   const handleAwayScore = ({ target: { value } }) => {
+    console.log(fixture[0][9])
+    const type = "awayTeam";
     if (!isNaN(value)) {
-      const number = parseInt(value);
+      // const number = parseInt(value);
+      var updateSelectedDay = updateFixture(
+        fixture,
+        dayIdx,
+        gameIdx,
+        value,
+        awayTeam,
+        type
+      );
+
+      const homeGoal = fixture[dayIdx][gameIdx].homeTeam.goal;
+      console.log(homeGoal)
       
-      console.log('day: ', dayIdx, 'game: ', gameIdx)
-      const selectedGame = fixture[dayIdx][gameIdx];
-      const selectedDay = fixture[dayIdx];
-      console.log(selectedGame);
-      console.log(selectedDay);
-
-      const updateSelectedGame = replaceItemAtIndex(selectedDay, gameIdx, {
-        ...selectedGame,
-        awayTeam: {
-          ...awayTeam,
-          goal: value,
-        }
-      } )
-
-      const updateSelectedDay = replaceItemAtIndex(fixture, dayIdx, updateSelectedGame);
-
-
       setFixture(updateSelectedDay);
-      
+
+      if ((homeGoal || homeGoal === '') && (value || value === '')) {
+        queryClient.setQueryData(
+          ["league", currentUser, route],
+          updateSelectedDay
+        ); //mutate the cache directly so no unnecessary fetching query are made.
+
+        mutation.mutate({
+          data: updateSelectedDay[dayIdx],
+          dayIdx: dayIdx,
+          route: route,
+        });
+      } 
     }
 
-    
+    const update = updateTable(
+      updateSelectedDay,
+      table,
+      value,
+      game,
+      homeGoal,
+      type
+    );
 
-    const reducer = (previousValue, currentValue) =>
-        previousValue + currentValue; //reducer function
-
-    if (hometeamGoal && value) {
-      
-
-      const pointsArrh = table[homeTeamIdx].pointsArr;
-      console.log(pointsArrh);
-      const pointsh = replaceItemAtIndex(
-        pointsArrh,
-        dayIdx,
-        value < hometeamGoal ? 3 : value > hometeamGoal ? 0 : 1
-      );
-
-      const updateHome = replaceItemAtIndex(table, homeTeamIdx, {
-        ...table[homeTeamIdx],
-        pointsArr: pointsh,
-        point: pointsh.filter((e) => e).reduce(reducer, 0),
-      });
-
-      const pointsArra = updateHome[awayTeamIdx].pointsArr;
-
-      const pointsa = replaceItemAtIndex(
-        pointsArra,
-        dayIdx,
-        value > hometeamGoal ? 3 : value < hometeamGoal ? 0 : 1
-      );
-
-      const updateAway = replaceItemAtIndex(updateHome, awayTeamIdx, {
-        ...updateHome[awayTeamIdx],
-        pointsArr: pointsa,
-        point: pointsa.filter((e) => e).reduce(reducer, 0),
-      });
-
-      console.log(updateAway);
-
-      const sortedTable = updateAway.sort((a, b) => b.point - a.point);
-
-      setTable(sortedTable);
-    } else {
-      
-      const pointsArrh = table[homeTeamIdx].pointsArr;
-      console.log(pointsArrh);
-      const pointsh = replaceItemAtIndex(
-        pointsArrh,
-        dayIdx,
-        0
-      );
-       
-
-      const updateHome = replaceItemAtIndex(table, homeTeamIdx, {
-        ...table[homeTeamIdx],
-        pointsArr: pointsh,
-        point: pointsh.filter((e) => e).reduce(reducer, 0),
-      });
-
-      const pointsArra = updateHome[awayTeamIdx].pointsArr;
-
-      const pointsa =  replaceItemAtIndex(
-        pointsArra,
-        dayIdx,
-        0
-      );
-       
-
-      const updateAway = replaceItemAtIndex(updateHome, awayTeamIdx, {
-        ...updateHome[awayTeamIdx],
-        pointsArr: pointsa,
-        point: pointsa.filter((e) => e).reduce(reducer, 0),
-      });
-
-      const sortedTable = updateAway.sort((a, b) => b.point - a.point);
-
-      setTable(sortedTable);
-      }
+    setTable(update);
   };
-
-
-
-  
 
   return (
     <div className="game">
@@ -261,17 +135,17 @@ const Game = ({ game }) => {
           <input
             className="goal-input"
             type="text"
-            value={hometeamGoal}
+            defaultValue={homeGoal}
             onChange={handleHomeScore}
-            maxlength="2"
+            maxLength="2"
           />
           <span className="separator">-</span>
           <input
             className="goal-input"
             type="text"
-            value={awayteamGoal}
+            defaultValue={awayGoal}
             onChange={handleAwayScore}
-            maxlength="2"
+            maxLength="2"
           />
         </div>
 
@@ -291,7 +165,5 @@ const Game = ({ game }) => {
 function replaceItemAtIndex(arr, index, newValue) {
   return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)];
 }
-
-
 
 export default Game;

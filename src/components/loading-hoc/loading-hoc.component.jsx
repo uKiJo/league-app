@@ -14,11 +14,7 @@ const LoadingHoc = (WrappedComponent) => {
         ) : (
             
             <WrappedComponent {...otherProps} />
-            
-            
         );
-       
-        
     };
     return Spinner;
 };

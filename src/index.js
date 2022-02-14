@@ -5,18 +5,17 @@ import App from "./App";
 import { RecoilRoot } from "recoil";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from 'react-query/devtools';
-
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
 const queryClient = new QueryClient({
   defaultOptions: {
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    retry: false,
-    staleTime: twentyFourHoursInMs,
-  }
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+    },
+  },
 });
 
 ReactDOM.render(

@@ -5,14 +5,38 @@
     
     .bg {
         
-        width: 100%;
+        width: 50%;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: column;
+        // background-color: var(--color-grey-medium);
+
+        .generate-buttons {
+            
+            display: flex;
+            justify-content: space-between;
+
+            .generate-button {
+                border: none;
+                padding: 2rem 4rem;
+                background-color: var(--secondary-color);
+                font-size: 1.6rem;
+                font-weight: bold;
+                color: var(--color-grey-light);
+                border-radius: .2rem;
+                cursor: pointer;
+            }
+        }
+
+        .hide-buttons {
+            display: none;
+        }
         
         .fixture {
             overflow: hidden;
             margin-top: 3rem;
-            width: 40%;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -22,16 +46,7 @@
             height: inherit;
             border-left: 8px solid var(--secondary-color);
             border-radius: 0.2rem;
-    
-            // &::before {
-            //     content: '';
-            //     width: 3px;
-            //     height: 100%;
-            //     position: absolute;
-            //     left: 0;
-            //     top: 0;
-            //     background-color: ;
-            // }
+            // font-size: 1.4rem;
     
             .day {
         
@@ -48,7 +63,13 @@
         }
     }
     
-    
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
 }
 
 @keyframes example {
