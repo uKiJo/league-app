@@ -26,7 +26,7 @@ import {
 
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { isCreatedState } from "./recoil/atoms/userState.atom";
-import Test from "./components/test.component";
+
 
 
 function App() {

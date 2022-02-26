@@ -2,12 +2,15 @@
 
 export const updateFixture = (
   fixture,
-  dayIdx,
-  gameIdx,
+  game,
   value,
   selecteTeam,
   type
 ) => {
+
+  const dayIdx = getDayidx(fixture, game);
+  const gameIdx = getGameidx(fixture, game);
+
   const selectedGame = fixture[dayIdx][gameIdx];
   const selectedDay = fixture[dayIdx];
 
@@ -22,7 +25,26 @@ export const updateFixture = (
   return replaceItemAtIndex(fixture, dayIdx, updateSelectedGame);
 };
 
-export const updateTable = (
+// const arrIdx = (fixture, game) => {
+//   return fixture.map((day) => day.findIndex((dayGame) => dayGame.id === game.id)); 
+// }
+
+export const getDayidx = (fixture, game) => {
+
+  const idxArr = fixture.map((day) => day.findIndex((dayGame) => dayGame.id === game.id));
+
+  return idxArr.findIndex((e) => e !== -1);
+}
+
+const getGameidx = (fixture, game) => {
+
+  const idxArr = fixture.map((day) => day.findIndex((dayGame) => dayGame.id === game.id));
+
+  return idxArr.find((e) => e !== -1);
+}
+
+
+ export const updateTable = (
   fixture,
   table,
   value,
@@ -202,3 +224,9 @@ function replaceItemAtIndex(arr, index, newValue) {
 
 const reducer = (previousValue, currentValue) =>
   previousValue + parseInt(currentValue);
+
+
+// module.exports = {
+//   updateFixture,
+//   arrIdx,
+// };

@@ -59,7 +59,7 @@ const Fixture = ({ currentUser, isCreate }) => {
     setFixture(data);
   }
   
-
+  console.log(fixture)
   
 
   console.log("fixture rendered");
