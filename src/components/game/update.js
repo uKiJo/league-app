@@ -1,12 +1,8 @@
 // by props we mean table properties, like points / goals for / wins...etc.
 
-export const updateFixture = (
-  fixture,
-  game,
-  value,
-  selecteTeam,
-  type
-) => {
+const updateFixture = (data) => {
+
+  const {fixture, game, value, selecteTeam, type} = data;
 
   const dayIdx = getDayidx(fixture, game);
   const gameIdx = getGameidx(fixture, game);
@@ -25,34 +21,24 @@ export const updateFixture = (
   return replaceItemAtIndex(fixture, dayIdx, updateSelectedGame);
 };
 
-// const arrIdx = (fixture, game) => {
-//   return fixture.map((day) => day.findIndex((dayGame) => dayGame.id === game.id)); 
-// }
 
-export const getDayidx = (fixture, game) => {
-
-  const idxArr = fixture.map((day) => day.findIndex((dayGame) => dayGame.id === game.id));
+const getDayidx = (fixture, game) => {
+  const idxArr = fixture.map((day) =>
+    day.findIndex((dayGame) => dayGame.id === game.id)
+  );
 
   return idxArr.findIndex((e) => e !== -1);
-}
+};
 
 const getGameidx = (fixture, game) => {
-
-  const idxArr = fixture.map((day) => day.findIndex((dayGame) => dayGame.id === game.id));
+  const idxArr = fixture.map((day) =>
+    day.findIndex((dayGame) => dayGame.id === game.id)
+  );
 
   return idxArr.find((e) => e !== -1);
-}
+};
 
-
- export const updateTable = (
-  fixture,
-  table,
-  value,
-  game,
-  otherTeamGoal,
-  type
-) => {
-
+const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
   let int = fixture.map((day) =>
     day.findIndex((dayGame) => dayGame.id === game.id)
   );
@@ -68,7 +54,6 @@ const getGameidx = (fixture, game) => {
   );
 
   if (otherTeamGoal && value) {
-
     const option1 = value < otherTeamGoal ? 3 : value > otherTeamGoal ? 0 : 1;
     const option2 = value > otherTeamGoal ? 3 : value < otherTeamGoal ? 0 : 1;
 
@@ -94,8 +79,6 @@ const getGameidx = (fixture, game) => {
       type === "homeTeam" ? option4 : option3,
     ];
 
-    
-
     const updateHomeTeam = updateAll(
       table,
       homeTeamIdx,
@@ -108,7 +91,6 @@ const getGameidx = (fixture, game) => {
         propOptionsHome
       )
     );
-
 
     const updateAwayTeam = updateAll(
       updateHomeTeam,
@@ -124,11 +106,9 @@ const getGameidx = (fixture, game) => {
     );
 
     return updateAwayTeam.sort((a, b) => b.points - a.points);
-  } 
+  }
   //else if input is deleted reset values to 0
   else {
-    
-
     const updateHomeTeam = updateAll(
       table,
       homeTeamIdx,
@@ -141,7 +121,6 @@ const getGameidx = (fixture, game) => {
         [0, 0, 0, 0, 0, 0]
       )
     );
-
 
     const updateAwayTeam = updateAll(
       updateHomeTeam,
@@ -165,7 +144,6 @@ const updateProp = (teamPropVal, dayIdx, newValue) => {
 };
 
 const updateAll = (arr, idx, arr2) => {
-
   var propUp;
   // console.log(arr2);
   arr2.map((e) => {
@@ -174,7 +152,7 @@ const updateAll = (arr, idx, arr2) => {
     propUp = replaceItemAtIndex(arr, idx, {
       ...arr[idx],
       [`${e[0]}`]: e[1],
-      [`${e[0]}`.substring(0, `${e[0]}`.length-3)]: prop,
+      [`${e[0]}`.substring(0, `${e[0]}`.length - 3)]: prop,
     });
     arr = propUp;
     // console.log(propUp)
@@ -201,9 +179,9 @@ const keyValueProp = (
   let filterNonArrProp = Object.entries(table[homeTeamIdx]).filter((el) =>
     Array.isArray(el[1])
   );
-  
+
   let propObj = Object.fromEntries(filterNonArrProp);
- 
+
   let propKeys = Object.keys(propObj);
 
   let c = propKeys.map((e, index) => {
@@ -225,8 +203,6 @@ function replaceItemAtIndex(arr, index, newValue) {
 const reducer = (previousValue, currentValue) =>
   previousValue + parseInt(currentValue);
 
+module.exports = { updateFixture, getDayidx, updateTable };
 
-// module.exports = {
-//   updateFixture,
-//   arrIdx,
-// };
+///////////////////////////////////////
