@@ -203,6 +203,6 @@ function replaceItemAtIndex(arr, index, newValue) {
 const reducer = (previousValue, currentValue) =>
   previousValue + parseInt(currentValue);
 
-module.exports = { updateFixture, getDayidx, updateTable };
+module.exports = { updateFixture, getDayidx, getGameidx, updateTable };
 
 ///////////////////////////////////////
