@@ -28,12 +28,12 @@ const firstDay = (arr) => {
 
   while (arr.length) {
     let game = {};
-    //pick a random index
 
+    //pick a random index
     let randomIdx = Math.floor(Math.random() * arr.length);
     let homeTeam = arr[randomIdx];
-    // game = { ...game, homeTeam };
     arr = [...arr.slice(0, randomIdx), ...arr.slice(randomIdx + 1)];
+    
     let randomIdx2 = Math.floor(Math.random() * arr.length);
     let awayTeam = arr[randomIdx2];
     game = { ...game, id: getId(), homeTeam, awayTeam };
