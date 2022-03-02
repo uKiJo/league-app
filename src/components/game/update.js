@@ -1,4 +1,4 @@
-// by props we mean table properties, like points / goals for / wins...etc.
+// by props we mean table properties, like points / goalsFor / goalsAgainst / wins ...etc.
 
 const updateFixture = (data) => {
 
@@ -17,7 +17,7 @@ const updateFixture = (data) => {
 
 const updateGameObject = (data, game) => {
 
-  const { selecteTeam, type, value} = data;
+  const { selecteTeam, type, value } = data;
   
   return {
     ...game,
@@ -45,12 +45,8 @@ const getGameidx = (fixture, game) => {
 };
 
 const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
-  let int = fixture.map((day) =>
-    day.findIndex((dayGame) => dayGame.id === game.id)
-  );
-
-  const dayIdx = int.findIndex((e) => e !== -1);
-  // const gameIdx = int.find((e) => e !== -1);
+  
+  const dayIdx = getDayidx(fixture, game)
 
   const homeTeamIdx = table.findIndex(
     (team) => team.name === game.homeTeam.name
@@ -91,8 +87,6 @@ const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
       keyValueProp(
         table,
         homeTeamIdx,
-        otherTeamGoal,
-        value,
         dayIdx,
         propOptionsHome
       )
@@ -104,8 +98,6 @@ const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
       keyValueProp(
         updateHomeTeam,
         awayTeamIdx,
-        otherTeamGoal,
-        value,
         dayIdx,
         propOptionsAway
       )
@@ -121,8 +113,6 @@ const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
       keyValueProp(
         table,
         homeTeamIdx,
-        otherTeamGoal,
-        value,
         dayIdx,
         [0, 0, 0, 0, 0, 0]
       )
@@ -134,8 +124,6 @@ const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
       keyValueProp(
         updateHomeTeam,
         awayTeamIdx,
-        otherTeamGoal,
-        value,
         dayIdx,
         [0, 0, 0, 0, 0, 0]
       )
@@ -144,6 +132,8 @@ const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
   }
 };
 
+
+
 const updateProp = (teamPropVal, dayIdx, newValue) => {
   const teamPropArr = teamPropVal;
   return replaceItemAtIndex(teamPropArr, dayIdx, newValue);
@@ -151,9 +141,8 @@ const updateProp = (teamPropVal, dayIdx, newValue) => {
 
 const updateAll = (arr, idx, arr2) => {
   var propUp;
-  // console.log(arr2);
+ 
   arr2.map((e) => {
-    // console.log([`${e[0]}`.substring(0, `${e[0]}`.length-3)], e[1]);
     const prop = reduceProp(e[1]);
     propUp = replaceItemAtIndex(arr, idx, {
       ...arr[idx],
@@ -161,10 +150,8 @@ const updateAll = (arr, idx, arr2) => {
       [`${e[0]}`.substring(0, `${e[0]}`.length - 3)]: prop,
     });
     arr = propUp;
-    // console.log(propUp)
+    
   });
-
-  // console.log(propUp)
 
   return propUp;
 };
@@ -177,8 +164,6 @@ const reduceProp = (prop) => {
 const keyValueProp = (
   table,
   homeTeamIdx,
-  otherTeamGoal,
-  value,
   dayIdx,
   propOptions
 ) => {
@@ -190,7 +175,7 @@ const keyValueProp = (
 
   let propKeys = Object.keys(propObj);
 
-  let c = propKeys.map((e, index) => {
+  let entriesProp = propKeys.map((e, index) => {
     let updatedProp = updateProp(
       table[homeTeamIdx][`${e}`],
       dayIdx,
@@ -199,7 +184,7 @@ const keyValueProp = (
     return [e, updatedProp];
   });
   // console.log(c)
-  return c;
+  return entriesProp;
 };
 
 function replaceItemAtIndex(arr, index, newValue) {
