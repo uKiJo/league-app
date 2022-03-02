@@ -45,12 +45,10 @@ test('update fixture test', () => {
 
     const obj = {
         fixture: mockFix,
-        game: game,
+        game,
         value: 1,
         team,
         type: 'team'
-
-
     }
 
     const test = updateFixture(obj)

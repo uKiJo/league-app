@@ -2,7 +2,7 @@
 
 const updateFixture = (data) => {
 
-  const {fixture, game, value, selecteTeam, type} = data;
+  const {fixture, game } = data;
 
   const dayIdx = getDayidx(fixture, game);
   const gameIdx = getGameidx(fixture, game);
@@ -10,17 +10,23 @@ const updateFixture = (data) => {
   const selectedGame = fixture[dayIdx][gameIdx];
   const selectedDay = fixture[dayIdx];
 
-  const updateSelectedGame = replaceItemAtIndex(selectedDay, gameIdx, {
-    ...selectedGame,
-    [type]: {
-      ...selecteTeam,
-      goal: value,
-    },
-  });
+  const updateSelectedGame = replaceItemAtIndex(selectedDay, gameIdx, updateGameObject(data, selectedGame));
 
   return replaceItemAtIndex(fixture, dayIdx, updateSelectedGame);
 };
 
+const updateGameObject = (data, game) => {
+
+  const { selecteTeam, type, value} = data;
+  
+  return {
+    ...game,
+    [type]: {
+      ...selecteTeam,
+      goal: value,
+    }
+  }
+}
 
 const getDayidx = (fixture, game) => {
   const idxArr = fixture.map((day) =>
