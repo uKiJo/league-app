@@ -3,13 +3,10 @@
 const updateFixture = (data) => {
 
   const {fixture, game } = data;
-
   const dayIdx = getDayidx(fixture, game);
   const gameIdx = getGameidx(fixture, game);
-
   const selectedGame = fixture[dayIdx][gameIdx];
   const selectedDay = fixture[dayIdx];
-
   const updateSelectedGame = replaceItemAtIndex(selectedDay, gameIdx, updateGameObject(data, selectedGame));
 
   return replaceItemAtIndex(fixture, dayIdx, updateSelectedGame);
@@ -44,7 +41,20 @@ const getGameidx = (fixture, game) => {
   return idxArr.find((e) => e !== -1);
 };
 
-const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
+const options = (value, opponentGoal) => {
+  return {
+    option1: value < opponentGoal ? 3 : value > opponentGoal ? 0 : 1,
+    option2: value > opponentGoal ? 3 : value < opponentGoal ? 0 : 1,
+
+    option3: value > opponentGoal ? 1 : 0,
+    option4: value < opponentGoal ? 1 : 0,
+    option5: value === opponentGoal ? 1 : 0,
+  }
+}
+
+const updateTable = (data) => {
+
+  const { fixture, table, game, value, opponentGoal, type } = data;
   
   const dayIdx = getDayidx(fixture, game)
 
@@ -55,18 +65,16 @@ const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
     (team) => team.name === game.awayTeam.name
   );
 
-  if (otherTeamGoal && value) {
-    const option1 = value < otherTeamGoal ? 3 : value > otherTeamGoal ? 0 : 1;
-    const option2 = value > otherTeamGoal ? 3 : value < otherTeamGoal ? 0 : 1;
+  if (opponentGoal && value) {
 
-    const option3 = value > otherTeamGoal ? 1 : 0;
-    const option4 = value < otherTeamGoal ? 1 : 0;
-    const option5 = value === otherTeamGoal ? 1 : 0;
+    const optionObj = options(value, opponentGoal);
 
+    const { option1, option2, option3, option4, option5} = optionObj;
+    
     let propOptionsAway = [
       type === "homeTeam" ? option1 : option2,
-      type === "homeTeam" ? parseInt(otherTeamGoal) : value,
-      type === "homeTeam" ? value : parseInt(otherTeamGoal),
+      type === "homeTeam" ? parseInt(opponentGoal) : value,
+      type === "homeTeam" ? value : parseInt(opponentGoal),
       type === "homeTeam" ? option4 : option3,
       option5,
       type === "homeTeam" ? option3 : option4,
@@ -74,8 +82,8 @@ const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
 
     let propOptionsHome = [
       type === "homeTeam" ? option2 : option1,
-      type === "homeTeam" ? value : parseInt(otherTeamGoal),
-      type === "homeTeam" ? parseInt(otherTeamGoal) : value,
+      type === "homeTeam" ? value : parseInt(opponentGoal),
+      type === "homeTeam" ? parseInt(opponentGoal) : value,
       type === "homeTeam" ? option3 : option4,
       option5,
       type === "homeTeam" ? option4 : option3,
