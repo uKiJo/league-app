@@ -21,9 +21,6 @@ class FixtureParamaters {
 
 }
 
-class TableParameters {
- 
-  
-}
+
 
   module.exports = {FixtureParamaters};

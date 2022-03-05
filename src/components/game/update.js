@@ -67,48 +67,20 @@ const updateTable = (data) => {
 
   if (opponentGoal && value) {
 
-    const optionObj = options(value, opponentGoal);
-
-    const { option1, option2, option3, option4, option5} = optionObj;
-    
-    let propOptionsAway = [
-      type === "homeTeam" ? option1 : option2,
-      type === "homeTeam" ? parseInt(opponentGoal) : value,
-      type === "homeTeam" ? value : parseInt(opponentGoal),
-      type === "homeTeam" ? option4 : option3,
-      option5,
-      type === "homeTeam" ? option3 : option4,
-    ];
-
-    let propOptionsHome = [
-      type === "homeTeam" ? option2 : option1,
-      type === "homeTeam" ? value : parseInt(opponentGoal),
-      type === "homeTeam" ? parseInt(opponentGoal) : value,
-      type === "homeTeam" ? option3 : option4,
-      option5,
-      type === "homeTeam" ? option4 : option3,
-    ];
+    let { awayOptions, homeOptions } = getOptions(value, opponentGoal, type);
 
     const updateHomeTeam = updateAll(
       table,
       homeTeamIdx,
-      keyValueProp(
-        table,
-        homeTeamIdx,
-        dayIdx,
-        propOptionsHome
-      )
+      dayIdx,
+      homeOptions
     );
 
     const updateAwayTeam = updateAll(
       updateHomeTeam,
       awayTeamIdx,
-      keyValueProp(
-        updateHomeTeam,
-        awayTeamIdx,
-        dayIdx,
-        propOptionsAway
-      )
+      dayIdx,
+      awayOptions
     );
 
     return updateAwayTeam.sort((a, b) => b.points - a.points);
@@ -118,37 +90,34 @@ const updateTable = (data) => {
     const updateHomeTeam = updateAll(
       table,
       homeTeamIdx,
-      keyValueProp(
-        table,
-        homeTeamIdx,
-        dayIdx,
-        [0, 0, 0, 0, 0, 0]
-      )
+      dayIdx,
+      ArrayOfZeros(6)
     );
 
     const updateAwayTeam = updateAll(
       updateHomeTeam,
       awayTeamIdx,
-      keyValueProp(
-        updateHomeTeam,
-        awayTeamIdx,
-        dayIdx,
-        [0, 0, 0, 0, 0, 0]
-      )
+      dayIdx,
+      ArrayOfZeros(6)
     );
     return updateAwayTeam.sort((a, b) => b.points - a.points);
   }
 };
 
-
+const ArrayOfZeros = (n) => {
+  return Array(n).fill(0);
+}
 
 const updateProp = (teamPropVal, dayIdx, newValue) => {
   const teamPropArr = teamPropVal;
   return replaceItemAtIndex(teamPropArr, dayIdx, newValue);
 };
 
-const updateAll = (arr, idx, arr2) => {
+const updateAll = (arr, idx, dayIdx, propOpt) => {
+
   var propUp;
+
+  let arr2 = propEntries(arr, idx, dayIdx, propOpt);
  
   arr2.map((e) => {
     const prop = reduceProp(e[1]);
@@ -168,14 +137,10 @@ const reduceProp = (prop) => {
   return prop.reduce(reducer, 0);
 };
 
-//create an array containing props keys and values
-const keyValueProp = (
-  table,
-  homeTeamIdx,
-  dayIdx,
-  propOptions
-) => {
-  let filterNonArrProp = Object.entries(table[homeTeamIdx]).filter((el) =>
+//create an array containing properties' keys and values
+const propEntries = (arr, idx, dayIdx, propOptions) => {
+   
+  let filterNonArrProp = Object.entries(arr[idx]).filter((el) =>
     Array.isArray(el[1])
   );
 
@@ -185,15 +150,40 @@ const keyValueProp = (
 
   let entriesProp = propKeys.map((e, index) => {
     let updatedProp = updateProp(
-      table[homeTeamIdx][`${e}`],
+      arr[idx][`${e}`],
       dayIdx,
       propOptions[index]
     );
     return [e, updatedProp];
   });
-  // console.log(c)
+ 
   return entriesProp;
 };
+
+function getOptions(value, opponentGoal, type) {
+  const optionObj = options(value, opponentGoal);
+
+  const { option1, option2, option3, option4, option5 } = optionObj;
+
+  let awayOptions = [
+    type === "homeTeam" ? option1 : option2,
+    type === "homeTeam" ? parseInt(opponentGoal) : value,
+    type === "homeTeam" ? value : parseInt(opponentGoal),
+    type === "homeTeam" ? option4 : option3,
+    option5,
+    type === "homeTeam" ? option3 : option4,
+  ];
+
+  let homeOptions = [
+    type === "homeTeam" ? option2 : option1,
+    type === "homeTeam" ? value : parseInt(opponentGoal),
+    type === "homeTeam" ? parseInt(opponentGoal) : value,
+    type === "homeTeam" ? option3 : option4,
+    option5,
+    type === "homeTeam" ? option4 : option3,
+  ];
+  return { awayOptions, homeOptions };
+}
 
 function replaceItemAtIndex(arr, index, newValue) {
   return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)];
@@ -202,6 +192,6 @@ function replaceItemAtIndex(arr, index, newValue) {
 const reducer = (previousValue, currentValue) =>
   previousValue + parseInt(currentValue);
 
-module.exports = { updateFixture, getDayidx, getGameidx, updateTable };
+module.exports = { updateFixture, getDayidx, getGameidx, updateTable, propEntries, getOptions };
 
 ///////////////////////////////////////

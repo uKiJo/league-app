@@ -39,7 +39,7 @@ const Game = ({ game, currentUser }) => {
 
     const type = "homeTeam";
 
-    const fixtureData = new FixtureParamaters(fixture, table, game, value, homeTeam, type);
+    const fixtureData = new FixtureParamaters(fixture, table, game, value, homeTeam, awayGoal, type);
     if (!isNaN(value)) {
     
       const updateSelectedDay = updateFixture(fixtureData);

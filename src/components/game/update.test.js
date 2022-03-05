@@ -1,4 +1,4 @@
-const {updateFixture, getDayidx, getGameidx} = require('./update');
+const {updateFixture, getDayidx, getGameidx, getOptions} = require('./update');
 
 test('index tests', () => {
 
@@ -55,6 +55,11 @@ test('update fixture test', () => {
 
     expect(test[0][0].team.goal).toBe(1)
 
+})
+
+test('getOptions function tests', () => {
+    const options = getOptions(1, 2, 'homeTeam');
+    console.log(options);
 })
 
 
