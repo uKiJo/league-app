@@ -56,53 +56,26 @@ const updateTable = (data) => {
 
   const { fixture, table, game, value, opponentGoal, type } = data;
   
-  const dayIdx = getDayidx(fixture, game)
+  const { homeTeamIdx, awayTeamIdx, dayIdx } = getIndices(fixture, game, table);
 
-  const homeTeamIdx = table.findIndex(
-    (team) => team.name === game.homeTeam.name
-  );
-  const awayTeamIdx = table.findIndex(
-    (team) => team.name === game.awayTeam.name
-  );
+  const dataObj = {table: table, homeTeamIdx: homeTeamIdx, awayTeamIdx: awayTeamIdx, dayIdx: dayIdx}
 
   if (opponentGoal && value) {
 
     let { awayOptions, homeOptions } = getOptions(value, opponentGoal, type);
 
-    const updateHomeTeam = updateAll(
-      table,
-      homeTeamIdx,
-      dayIdx,
-      homeOptions
-    );
+    const updatedTable = updateOnchange(dataObj, homeOptions, awayOptions);
 
-    const updateAwayTeam = updateAll(
-      updateHomeTeam,
-      awayTeamIdx,
-      dayIdx,
-      awayOptions
-    );
-
-    return updateAwayTeam.sort((a, b) => b.points - a.points);
+    return updatedTable.sort((a, b) => b.points - a.points);
   }
   //else if input is deleted reset values to 0
   else {
-    const updateHomeTeam = updateAll(
-      table,
-      homeTeamIdx,
-      dayIdx,
-      ArrayOfZeros(6)
-    );
-
-    const updateAwayTeam = updateAll(
-      updateHomeTeam,
-      awayTeamIdx,
-      dayIdx,
-      ArrayOfZeros(6)
-    );
-    return updateAwayTeam.sort((a, b) => b.points - a.points);
+    const updatedTable = resetOnDelete(dataObj);
+    return updatedTable.sort((a, b) => b.points - a.points);
   }
 };
+
+
 
 const ArrayOfZeros = (n) => {
   return Array(n).fill(0);
@@ -159,6 +132,60 @@ const propEntries = (arr, idx, dayIdx, propOptions) => {
  
   return entriesProp;
 };
+
+function getIndices(fixture, game, table) {
+  const dayIdx = getDayidx(fixture, game);
+
+  const homeTeamIdx = table.findIndex(
+    (team) => team.name === game.homeTeam.name
+  );
+  const awayTeamIdx = table.findIndex(
+    (team) => team.name === game.awayTeam.name
+  );
+  return { homeTeamIdx, awayTeamIdx, dayIdx };
+}
+
+function resetOnDelete(data) {
+
+  const {table, homeTeamIdx, awayTeamIdx, dayIdx} = data;
+
+  const resetArray = ArrayOfZeros(6);
+
+  const updateHomeTeam = updateAll(
+    table,
+    homeTeamIdx,
+    dayIdx,
+    resetArray
+  );
+
+  const updateAwayTeam = updateAll(
+    updateHomeTeam,
+    awayTeamIdx,
+    dayIdx,
+    resetArray
+  );
+  return updateAwayTeam;
+}
+
+function updateOnchange(data, homeOptions, awayOptions) {
+
+  const {table, homeTeamIdx, awayTeamIdx, dayIdx} = data;
+
+  const updateHomeTeam = updateAll(
+    table,
+    homeTeamIdx,
+    dayIdx,
+    homeOptions
+  );
+
+  const updateAwayTeam = updateAll(
+    updateHomeTeam,
+    awayTeamIdx,
+    dayIdx,
+    awayOptions
+  );
+  return updateAwayTeam;
+}
 
 function getOptions(value, opponentGoal, type) {
   const optionObj = options(value, opponentGoal);
