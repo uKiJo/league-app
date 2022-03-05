@@ -65,7 +65,6 @@ const updateTable = (data) => {
     let { awayOptions, homeOptions } = getOptions(value, opponentGoal, type);
 
     const updatedTable = updateOnchange(dataObj, homeOptions, awayOptions);
-
     return updatedTable.sort((a, b) => b.points - a.points);
   }
   //else if input is deleted reset values to 0
