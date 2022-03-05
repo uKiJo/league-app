@@ -39,7 +39,7 @@ const Game = ({ game, currentUser }) => {
 
     const type = "homeTeam";
 
-    const fixtureData = new FixtureParamaters(fixture, game, value, homeTeam, type);
+    const fixtureData = new FixtureParamaters(fixture, table, game, value, homeTeam, awayGoal, type);
     if (!isNaN(value)) {
     
       const updateSelectedDay = updateFixture(fixtureData);
@@ -64,7 +64,7 @@ const Game = ({ game, currentUser }) => {
       
     }
 
-    const update = updateTable(fixture, table, value, game, awayGoal, type);
+    const update = updateTable(fixtureData);
     setTable(update);
   };
 
@@ -72,7 +72,7 @@ const Game = ({ game, currentUser }) => {
 
     const type = "awayTeam";
 
-    const fixtureData = new FixtureParamaters(fixture, game, value, awayTeam, type);
+    const fixtureData = new FixtureParamaters(fixture, table, game, value, awayTeam, homeGoal, type);
     if (!isNaN(value)) {
 
       var updateSelectedDay = updateFixture(fixtureData);
@@ -95,14 +95,7 @@ const Game = ({ game, currentUser }) => {
       } 
     }
 
-    const update = updateTable(
-      updateSelectedDay,
-      table,
-      value,
-      game,
-      homeGoal,
-      type
-    );
+    const update = updateTable(fixtureData)
 
     setTable(update);
   };

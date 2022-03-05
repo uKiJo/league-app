@@ -1,31 +1,26 @@
 class FixtureParamaters {
-    constructor(fixture, game, value, selecteTeam, type) {
+    constructor(fixture, table, game, value, selecteTeam, opponentGoal, type) {
       this.data = {
         fixture: fixture,
+        table: table,
         game: game,
         value: value,
         selecteTeam: selecteTeam,
+        opponentGoal: opponentGoal,
         type: type
       }
     }
   
     get fixture() {return this.data.fixture;}
+    get table() {return this.data.table;}
     get game() {return this.data.game;}
     get value() {return this.data.value;}
     get selecteTeam() {return this.data.selecteTeam;}
+    get opponentGoal() {return this.data.opponentGoal;}
     get type() {return this.data.type;}
 
-    getDayidx(fixture, game) {
-        const idxArr = fixture.map((day) =>
-          day.findIndex((dayGame) => dayGame.id === game.id)
-        );
-
-        return idxArr.findIndex((e) => e !== -1);
-  }
 }
 
-class TableParameters {
-  
-}
+
 
   module.exports = {FixtureParamaters};

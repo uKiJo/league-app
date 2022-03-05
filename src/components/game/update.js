@@ -3,13 +3,10 @@
 const updateFixture = (data) => {
 
   const {fixture, game } = data;
-
   const dayIdx = getDayidx(fixture, game);
   const gameIdx = getGameidx(fixture, game);
-
   const selectedGame = fixture[dayIdx][gameIdx];
   const selectedDay = fixture[dayIdx];
-
   const updateSelectedGame = replaceItemAtIndex(selectedDay, gameIdx, updateGameObject(data, selectedGame));
 
   return replaceItemAtIndex(fixture, dayIdx, updateSelectedGame);
@@ -44,7 +41,20 @@ const getGameidx = (fixture, game) => {
   return idxArr.find((e) => e !== -1);
 };
 
-const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
+const options = (value, opponentGoal) => {
+  return {
+    option1: value < opponentGoal ? 3 : value > opponentGoal ? 0 : 1,
+    option2: value > opponentGoal ? 3 : value < opponentGoal ? 0 : 1,
+
+    option3: value > opponentGoal ? 1 : 0,
+    option4: value < opponentGoal ? 1 : 0,
+    option5: value === opponentGoal ? 1 : 0,
+  }
+}
+
+const updateTable = (data) => {
+
+  const { fixture, table, game, value, opponentGoal, type } = data;
   
   const dayIdx = getDayidx(fixture, game)
 
@@ -55,52 +65,22 @@ const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
     (team) => team.name === game.awayTeam.name
   );
 
-  if (otherTeamGoal && value) {
-    const option1 = value < otherTeamGoal ? 3 : value > otherTeamGoal ? 0 : 1;
-    const option2 = value > otherTeamGoal ? 3 : value < otherTeamGoal ? 0 : 1;
+  if (opponentGoal && value) {
 
-    const option3 = value > otherTeamGoal ? 1 : 0;
-    const option4 = value < otherTeamGoal ? 1 : 0;
-    const option5 = value === otherTeamGoal ? 1 : 0;
-
-    let propOptionsAway = [
-      type === "homeTeam" ? option1 : option2,
-      type === "homeTeam" ? parseInt(otherTeamGoal) : value,
-      type === "homeTeam" ? value : parseInt(otherTeamGoal),
-      type === "homeTeam" ? option4 : option3,
-      option5,
-      type === "homeTeam" ? option3 : option4,
-    ];
-
-    let propOptionsHome = [
-      type === "homeTeam" ? option2 : option1,
-      type === "homeTeam" ? value : parseInt(otherTeamGoal),
-      type === "homeTeam" ? parseInt(otherTeamGoal) : value,
-      type === "homeTeam" ? option3 : option4,
-      option5,
-      type === "homeTeam" ? option4 : option3,
-    ];
+    let { awayOptions, homeOptions } = getOptions(value, opponentGoal, type);
 
     const updateHomeTeam = updateAll(
       table,
       homeTeamIdx,
-      keyValueProp(
-        table,
-        homeTeamIdx,
-        dayIdx,
-        propOptionsHome
-      )
+      dayIdx,
+      homeOptions
     );
 
     const updateAwayTeam = updateAll(
       updateHomeTeam,
       awayTeamIdx,
-      keyValueProp(
-        updateHomeTeam,
-        awayTeamIdx,
-        dayIdx,
-        propOptionsAway
-      )
+      dayIdx,
+      awayOptions
     );
 
     return updateAwayTeam.sort((a, b) => b.points - a.points);
@@ -110,37 +90,34 @@ const updateTable = (fixture, table, value, game, otherTeamGoal, type) => {
     const updateHomeTeam = updateAll(
       table,
       homeTeamIdx,
-      keyValueProp(
-        table,
-        homeTeamIdx,
-        dayIdx,
-        [0, 0, 0, 0, 0, 0]
-      )
+      dayIdx,
+      ArrayOfZeros(6)
     );
 
     const updateAwayTeam = updateAll(
       updateHomeTeam,
       awayTeamIdx,
-      keyValueProp(
-        updateHomeTeam,
-        awayTeamIdx,
-        dayIdx,
-        [0, 0, 0, 0, 0, 0]
-      )
+      dayIdx,
+      ArrayOfZeros(6)
     );
     return updateAwayTeam.sort((a, b) => b.points - a.points);
   }
 };
 
-
+const ArrayOfZeros = (n) => {
+  return Array(n).fill(0);
+}
 
 const updateProp = (teamPropVal, dayIdx, newValue) => {
   const teamPropArr = teamPropVal;
   return replaceItemAtIndex(teamPropArr, dayIdx, newValue);
 };
 
-const updateAll = (arr, idx, arr2) => {
+const updateAll = (arr, idx, dayIdx, propOpt) => {
+
   var propUp;
+
+  let arr2 = propEntries(arr, idx, dayIdx, propOpt);
  
   arr2.map((e) => {
     const prop = reduceProp(e[1]);
@@ -160,14 +137,10 @@ const reduceProp = (prop) => {
   return prop.reduce(reducer, 0);
 };
 
-//create an array containing props keys and values
-const keyValueProp = (
-  table,
-  homeTeamIdx,
-  dayIdx,
-  propOptions
-) => {
-  let filterNonArrProp = Object.entries(table[homeTeamIdx]).filter((el) =>
+//create an array containing properties' keys and values
+const propEntries = (arr, idx, dayIdx, propOptions) => {
+   
+  let filterNonArrProp = Object.entries(arr[idx]).filter((el) =>
     Array.isArray(el[1])
   );
 
@@ -177,15 +150,40 @@ const keyValueProp = (
 
   let entriesProp = propKeys.map((e, index) => {
     let updatedProp = updateProp(
-      table[homeTeamIdx][`${e}`],
+      arr[idx][`${e}`],
       dayIdx,
       propOptions[index]
     );
     return [e, updatedProp];
   });
-  // console.log(c)
+ 
   return entriesProp;
 };
+
+function getOptions(value, opponentGoal, type) {
+  const optionObj = options(value, opponentGoal);
+
+  const { option1, option2, option3, option4, option5 } = optionObj;
+
+  let awayOptions = [
+    type === "homeTeam" ? option1 : option2,
+    type === "homeTeam" ? parseInt(opponentGoal) : value,
+    type === "homeTeam" ? value : parseInt(opponentGoal),
+    type === "homeTeam" ? option4 : option3,
+    option5,
+    type === "homeTeam" ? option3 : option4,
+  ];
+
+  let homeOptions = [
+    type === "homeTeam" ? option2 : option1,
+    type === "homeTeam" ? value : parseInt(opponentGoal),
+    type === "homeTeam" ? parseInt(opponentGoal) : value,
+    type === "homeTeam" ? option3 : option4,
+    option5,
+    type === "homeTeam" ? option4 : option3,
+  ];
+  return { awayOptions, homeOptions };
+}
 
 function replaceItemAtIndex(arr, index, newValue) {
   return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)];
@@ -194,6 +192,6 @@ function replaceItemAtIndex(arr, index, newValue) {
 const reducer = (previousValue, currentValue) =>
   previousValue + parseInt(currentValue);
 
-module.exports = { updateFixture, getDayidx, getGameidx, updateTable };
+module.exports = { updateFixture, getDayidx, getGameidx, updateTable, propEntries, getOptions };
 
 ///////////////////////////////////////
