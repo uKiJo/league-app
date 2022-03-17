@@ -74,9 +74,7 @@ const updateTable = (data) => {
   }
 };
 
-
-
-const ArrayOfZeros = (n) => {
+const arrayOfZeros = (n) => {
   return Array(n).fill(0);
 }
 
@@ -87,7 +85,7 @@ const updateProp = (teamPropVal, dayIdx, newValue) => {
 
 const updateAll = (arr, idx, dayIdx, propOpt) => {
 
-  var propUp;
+  let propUp;
 
   let arr2 = propEntries(arr, idx, dayIdx, propOpt);
  
@@ -148,7 +146,7 @@ function resetOnDelete(data) {
 
   const {table, homeTeamIdx, awayTeamIdx, dayIdx} = data;
 
-  const resetArray = ArrayOfZeros(6);
+  const resetArray = arrayOfZeros(6);
 
   const updateHomeTeam = updateAll(
     table,
@@ -218,6 +216,6 @@ function replaceItemAtIndex(arr, index, newValue) {
 const reducer = (previousValue, currentValue) =>
   previousValue + parseInt(currentValue);
 
-module.exports = { updateFixture, getDayidx, getGameidx, updateTable, propEntries, getOptions };
+module.exports = { updateFixture, getDayidx, getGameidx, updateTable, propEntries, getOptions, arrayOfZeros };
 
 ///////////////////////////////////////

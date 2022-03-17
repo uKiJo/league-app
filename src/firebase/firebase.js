@@ -171,6 +171,15 @@ export const addTable = async (userAuth, tableData) => {
   }
 };
 
+export const updateTable = (userAuth, data) => {
+  try {
+    
+    
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
+
 export const fetchLeagues = async (userAuth) => {
   try {
     const myleagues = collection(db, 'users', `${userAuth.uid}`, 'My Leagues');

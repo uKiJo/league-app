@@ -44,7 +44,7 @@ const Fixture = ({ currentUser, isCreate }) => {
 
   
 
-  const { data, isError, isLoading, isSuccess } = useQuery(
+  const { data, isError, isLoading } = useQuery(
     ["league", currentUser, param.leagueId],
     () => fetchLeague(currentUser, route),
     { refetchOnWindowFocus: false,
