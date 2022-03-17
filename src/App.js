@@ -58,17 +58,23 @@ function App() {
   }, [currentUser]);
 
   const { data, isLoading, isError } = useQuery("data", fetchData);
+ 
+  // const leagues = useQuery(["leagues", {currentUser}],  () => fetchLeagues(currentUser));
 
+  
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return alert("something went wrong");
   if (!table.length) {
     const tableData = data.teams;
-    // const teamsNumber = tableData.length;
-    const standing = tableData.map(el => addPropToTable(el));
+    const teamsNumber = tableData.length;
+    
+    const standing = tableData.map(el => addPropToTable(el, teamsNumber));
     console.log(standing)
     setTable(standing);
   }
+  
+  // if (leagues.status === 'success') setMyLeagues(leagues.data)
 
   setTeams(data.teams);
 
