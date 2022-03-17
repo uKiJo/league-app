@@ -26,14 +26,13 @@ const Game = ({ game, currentUser }) => {
   const homeGoal = game.homeTeam.goal;
   const awayGoal = game.awayTeam.goal;
 
-  const mutation = useMutation(({ data, dayIdx, route }) =>
+  const mutateFixture = useMutation(({ data, dayIdx, route }) =>
     updateFix(currentUser, data, dayIdx, route)
   );
 
   const { homeTeam, awayTeam } = game;
   const dayIdx = getDayidx(fixture, game);
 
-  
 
   const handleHomeScore = ({ target: { value } }) => {
 
@@ -44,7 +43,7 @@ const Game = ({ game, currentUser }) => {
     
       const updateSelectedDay = updateFixture(fixtureData);
 
-      //mutate the cache directly so no unnecessary fetching query are made.
+      // mutate the cache directly so no unnecessary fetching query are made.
       queryClient.setQueryData(
         ["league", currentUser, route],
         updateSelectedDay
@@ -55,7 +54,7 @@ const Game = ({ game, currentUser }) => {
       // if the away input field exist, mutate!
       if ((awayGoal || awayGoal === '') && (!isNaN(value)  || value === '')) {
        
-        mutation.mutate({
+        mutateFixture.mutate({
           data: updateSelectedDay[dayIdx],
           dayIdx: dayIdx,
           route: route,
@@ -87,7 +86,7 @@ const Game = ({ game, currentUser }) => {
 
       if ((homeGoal || homeGoal === '') && (!isNaN(value) || value === '')) {
 
-        mutation.mutate({
+        mutateFixture.mutate({
           data: updateSelectedDay[dayIdx],
           dayIdx: dayIdx,
           route: route,

@@ -36,9 +36,16 @@ const LeagueSettings = ({ currentUser }) => {
 
   let navigate = useNavigate();
 
- 
+  const queryClient = useQueryClient();
+  
   const mutation = useMutation(({ data, name }) =>
-    addFixture(currentUser, data, name)
+    addFixture(currentUser, data, name),
+    {
+      onSuccess: (data) => {
+        // queryClient.invalidateQueries('leagues');
+        queryClient.invalidateQueries(['leagues'], data)
+      },
+    }
   );
   const tableMutation = useMutation((data) => addTable(currentUser, data));
 
@@ -54,7 +61,7 @@ const LeagueSettings = ({ currentUser }) => {
     console.log(existing)
 
     if(!existing) {
-      navigate('/myleagues')
+      navigate(`/myleagues/${leagueName}`)
     }
   }
 
@@ -67,24 +74,6 @@ const LeagueSettings = ({ currentUser }) => {
     setGenerate("Regenerate");
     // setTimeout(() => setAnimate(false), 300);
   };
-
-  // useEffect(() => {
-  //   if(mutation.status === 'success') {
-  //     setIsCreated(true)
-  //   }
-
-  //   const currentName = leagueName;
-
-  //   const existing = myLeagues.includes(currentName);
-  //   console.log(existing)
-
-  //   if(isCreated && !existing) {
-  //     navigate('/myleagues')
-  //   }
-
-  //   console.log(isCreated);
-  // }, [mutation, isCreated])
-  
 
   return (
     <div

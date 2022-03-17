@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { useQuery } from "react-query";
+import { useRecoilState } from "recoil";
 
 import SignIn from "./components/sign-in/sign-in.component";
 import SignUp from "./components/sign-up/sign-up.component";
@@ -12,11 +13,12 @@ import Header from "./components/header/header.component";
 import MyLeagues from "./components/my-leagues/my-leagues.component";
 import League from "./components/league/league.component";
 import CreateLeague from "./components/create-league/create-league.component";
+import { SpinnerContainer } from "./components/loading-hoc/loading-hoc.styles";
 
 import { auth, fetchData, fetchLeagues } from "./firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
-import { useRecoilState } from "recoil";
+import { addPropToTable } from "./utility/utils";
 
 import {
   teamsState,
@@ -26,6 +28,7 @@ import {
 
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { isCreatedState } from "./recoil/atoms/userState.atom";
+
 
 
 
@@ -54,38 +57,18 @@ function App() {
     };
   }, [currentUser]);
 
-  const { data, isLoading, isError, isSuccess } = useQuery("data", fetchData);
- 
-  // const leagues = useQuery(["leagues", {currentUser}],  () => fetchLeagues(currentUser));
+  const { data, isLoading, isError } = useQuery("data", fetchData);
 
-  
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return alert("something went wrong");
   if (!table.length) {
     const tableData = data.teams;
-    const teamsNumber = tableData.length;
-    const standing = tableData.map((el) => ({
-      ...el,
-      points: 0,
-      pointsArr: new Array(teamsNumber).fill(0),
-      goals: 0,
-      goalsArr: new Array(teamsNumber).fill(0),
-      ga: 0,
-      gaArr: new Array(teamsNumber).fill(0),
-      gd: 0,
-      wArr: new Array(teamsNumber).fill(0),
-      w: 0,
-      dArr: new Array(teamsNumber).fill(0),
-      d: 0,
-      lArr: new Array(teamsNumber).fill(0),
-      l: 0,
-      p: 0,
-    }));
+    // const teamsNumber = tableData.length;
+    const standing = tableData.map(el => addPropToTable(el));
+    console.log(standing)
     setTable(standing);
   }
-  
-  // if (leagues.status === 'success') setMyLeagues(leagues.data)
 
   setTeams(data.teams);
 
