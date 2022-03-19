@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { auth } from '../../firebase/firebase';
 import { signOut } from 'firebase/auth';
@@ -7,6 +7,9 @@ import { signOut } from 'firebase/auth';
 import './header.styles.scss';
 
 const Header = ({currentUser}) => {
+
+    const navigate = useNavigate();
+
     return (
         <div className='header'>
             <Link className='option' to='/'>Logo</Link>
@@ -19,7 +22,7 @@ const Header = ({currentUser}) => {
 
             {
                 currentUser ?
-                <div className='option' onClick={() => signOut(auth)} >Sign out</div> :
+                <div className='option' onClick={() => {signOut(auth); navigate('/')} } >Sign out</div> :
                 <Link className='option' to='/signin'>Sign in</Link>
             }
             

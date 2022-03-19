@@ -15,7 +15,7 @@ import League from "./components/league/league.component";
 import CreateLeague from "./components/create-league/create-league.component";
 import { SpinnerContainer } from "./components/loading-hoc/loading-hoc.styles";
 
-import { auth, fetchData, fetchLeagues } from "./firebase/firebase";
+import { auth, fetchPremierLeagueData, fetchLeagues } from "./firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 import { addPropToTable } from "./utility/utils";
@@ -28,7 +28,6 @@ import {
 
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { isCreatedState } from "./recoil/atoms/userState.atom";
-
 
 
 
@@ -57,18 +56,14 @@ function App() {
     };
   }, [currentUser]);
 
-  const { data, isLoading, isError } = useQuery("data", fetchData);
+  const { data, isLoading, isError } = useQuery("data", fetchPremierLeagueData);
  
-  // const leagues = useQuery(["leagues", {currentUser}],  () => fetchLeagues(currentUser));
-
-  
-
   if (isLoading) return <div>Loading...</div>;
   if (isError) return alert("something went wrong");
   if (!table.length) {
     const tableData = data.teams;
     const teamsNumber = tableData.length;
-    
+
     const standing = tableData.map(el => addPropToTable(el, teamsNumber));
     console.log(standing)
     setTable(standing);

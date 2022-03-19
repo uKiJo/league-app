@@ -49,7 +49,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
-export const fetchData = async () => {
+export const fetchPremierLeagueData = async () => {
   const docRef = doc(db, "data", "premier league");
 
   const docSnap = await getDoc(docRef);
