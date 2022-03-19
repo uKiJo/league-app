@@ -16,14 +16,14 @@ const MyLeagues = ({ currentUser }) => {
 
   const errorAlert = () => toast.error('Something weng wrong, please try again.', {duration: 5000});
 
-  const {data, isLoading, isError, error} = useQuery(["leagues", currentUser],  () => fetchLeagues(currentUser));
+  const {data, isLoading, isError, error} = useQuery(["leagues", currentUser.uid],  () => fetchLeagues(currentUser));
 
   //add is loading
   if(isLoading) return <div className="spinner-container"><SpinnerContainer width="50px" /></div> 
   if(isError) return <Toaster />
   
   setLeagues(data)
-  
+   
 
   return (
     <div className="myleagues-container">

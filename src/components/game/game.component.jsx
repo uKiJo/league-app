@@ -5,9 +5,12 @@ import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { updateFix } from "../../firebase/firebase";
 
+import { MutateLeagueCache } from "./hooks/useFixture";
+
 import { fixtureState, tableState } from "../../recoil/atoms/teams.atom";
 
 import "./game.styles.scss";
+
 
 const { updateFixture, updateTable, getDayidx } = require('./update');
 const { FixtureParamaters } = require('./data');
@@ -26,12 +29,15 @@ const Game = ({ game, currentUser }) => {
   const homeGoal = game.homeTeam.goal;
   const awayGoal = game.awayTeam.goal;
 
-  const mutateFixture = useMutation(({ data, dayIdx, route }) =>
+  const mutateFixture = useMutation(({ data, dayIdx, route }) => {
     updateFix(currentUser, data, dayIdx, route)
+  }
   );
 
   const { homeTeam, awayTeam } = game;
   const dayIdx = getDayidx(fixture, game);
+
+   
 
 
   const handleHomeScore = ({ target: { value } }) => {
@@ -44,11 +50,9 @@ const Game = ({ game, currentUser }) => {
       const updateSelectedDay = updateFixture(fixtureData);
 
       // mutate the cache directly so no unnecessary fetching query are made.
-      queryClient.setQueryData(
-        ["league", currentUser, route],
-        updateSelectedDay
-      ); 
-      
+      const cacheUpdate = MutateLeagueCache(queryClient);
+      cacheUpdate(updateSelectedDay, currentUser, route);
+
       setFixture(updateSelectedDay);
     
       // if the away input field exist, mutate!
@@ -74,13 +78,11 @@ const Game = ({ game, currentUser }) => {
     const fixtureData = new FixtureParamaters(fixture, table, game, value, awayTeam, homeGoal, type);
     if (!isNaN(value)) {
 
-      var updateSelectedDay = updateFixture(fixtureData);
+      const updateSelectedDay = updateFixture(fixtureData);
 
       //mutate the cache directly so no unnecessary fetching query are made.
-      queryClient.setQueryData(
-        ["league", currentUser, route],
-        updateSelectedDay
-      ); 
+      const cacheUpdate = MutateLeagueCache(queryClient);
+      cacheUpdate(updateSelectedDay, currentUser, route);
       
       setFixture(updateSelectedDay);
 

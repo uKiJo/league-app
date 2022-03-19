@@ -45,11 +45,11 @@ const Fixture = ({ currentUser, isCreate }) => {
   
 
   const { data, isError, isLoading } = useQuery(
-    ["league", currentUser, param.leagueId],
+    ["league", currentUser?.uid, route],
     () => fetchLeague(currentUser, route),
     { refetchOnWindowFocus: false,
       refetchOnMount: false,
-      enabled: isAutoFetching }
+      enabled: isAutoFetching && !!currentUser }
   );
 
   if(!isCreate) {
