@@ -1,5 +1,6 @@
-import { useQueryClient } from "react-query";
+import { useQueryClient, useMutation } from "react-query";
 import { updateFix } from "../../../firebase/firebase";
+
 
 export const useFixture = (data) => {
   const queryClient = useQueryClient();
@@ -16,3 +17,9 @@ export const MutateLeagueCache = (queryClient) => {
     queryClient.setQueryData(["league", uid, route], data);
   };
 };
+
+export const useUpdateFixture = (currentUser) => {
+  const { mutate } = useMutation(({data, dayIdx, route}) => updateFix(currentUser, data, dayIdx, route));
+
+  return mutate;
+}
