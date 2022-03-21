@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { updateFix } from "../../firebase/firebase";
 
-import { MutateLeagueCache } from "./hooks/useFixture";
+import { MutateLeagueCache, useUpdateFixture } from "./hooks/useFixture";
 
 import { fixtureState, tableState } from "../../recoil/atoms/teams.atom";
 
@@ -21,7 +21,7 @@ const Game = ({ game, currentUser }) => {
   const param = useParams();
   const route = param.leagueId;
 
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient(); 
 
   const [fixture, setFixture] = useRecoilState(fixtureState);
   const [table, setTable] = useRecoilState(tableState);
@@ -29,15 +29,11 @@ const Game = ({ game, currentUser }) => {
   const homeGoal = game.homeTeam.goal;
   const awayGoal = game.awayTeam.goal;
 
-  const mutateFixture = useMutation(({ data, dayIdx, route }) => {
-    updateFix(currentUser, data, dayIdx, route)
-  }
-  );
-
   const { homeTeam, awayTeam } = game;
   const dayIdx = getDayidx(fixture, game);
 
-   
+  //mutation functions
+  const mutateFixture = useUpdateFixture(currentUser);
 
 
   const handleHomeScore = ({ target: { value } }) => {
@@ -49,7 +45,7 @@ const Game = ({ game, currentUser }) => {
     
       const updateSelectedDay = updateFixture(fixtureData);
 
-      // mutate the cache directly so no unnecessary fetching query are made.
+      // mutate the cache directly so no unnecessary request calls are made.
       const cacheUpdate = MutateLeagueCache(queryClient);
       cacheUpdate(updateSelectedDay, currentUser, route);
 
@@ -57,12 +53,9 @@ const Game = ({ game, currentUser }) => {
     
       // if the away input field exist, mutate!
       if ((awayGoal || awayGoal === '') && (!isNaN(value)  || value === '')) {
+
+        mutateFixture({data: updateSelectedDay[dayIdx], dayIdx: dayIdx, route: route})
        
-        mutateFixture.mutate({
-          data: updateSelectedDay[dayIdx],
-          dayIdx: dayIdx,
-          route: route,
-        }); //mutate the database only if both score input are filled (to minimize data requests!!)
       }
       
     }
@@ -87,12 +80,9 @@ const Game = ({ game, currentUser }) => {
       setFixture(updateSelectedDay);
 
       if ((homeGoal || homeGoal === '') && (!isNaN(value) || value === '')) {
-
-        mutateFixture.mutate({
-          data: updateSelectedDay[dayIdx],
-          dayIdx: dayIdx,
-          route: route,
-        });
+        
+        mutateFixture({data: updateSelectedDay[dayIdx], dayIdx: dayIdx, route: route})
+  
       } 
     }
 
