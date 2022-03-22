@@ -2,14 +2,16 @@ import React from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 
+
 import { useRecoilState } from "recoil";
 import { updateFix } from "../../firebase/firebase";
 
-import { MutateLeagueCache, useUpdateFixture } from "./hooks/useFixture";
+import { MutateLeagueCache, useUpdateFixture, useUpdateTable } from "./hooks/useFixture";
 
 import { fixtureState, tableState } from "../../recoil/atoms/teams.atom";
 
 import "./game.styles.scss";
+import toast, { Toaster } from "react-hot-toast";
 
 
 const { updateFixture, updateTable, getDayidx } = require('./update');
@@ -34,12 +36,13 @@ const Game = ({ game, currentUser }) => {
 
   //mutation functions
   const mutateFixture = useUpdateFixture(currentUser);
+  const mutateTable = useUpdateTable(currentUser);
 
 
   const handleHomeScore = ({ target: { value } }) => {
 
     const type = "homeTeam";
-
+    
     const fixtureData = new FixtureParamaters(fixture, table, game, value, homeTeam, awayGoal, type);
     if (!isNaN(value)) {
     
@@ -55,19 +58,22 @@ const Game = ({ game, currentUser }) => {
       if ((awayGoal || awayGoal === '') && (!isNaN(value)  || value === '')) {
 
         mutateFixture({data: updateSelectedDay[dayIdx], dayIdx: dayIdx, route: route})
-       
+        const update = updateTable(fixtureData);
+        setTable(update);
+        mutateTable({data: update, league: route})
+      
       }
       
     }
 
-    const update = updateTable(fixtureData);
-    setTable(update);
+    // const update = updateTable(fixtureData);
+    // setTable(update);
   };
 
   const handleAwayScore = ({ target: { value } }) => {
 
     const type = "awayTeam";
-
+    
     const fixtureData = new FixtureParamaters(fixture, table, game, value, awayTeam, homeGoal, type);
     if (!isNaN(value)) {
 
@@ -81,18 +87,21 @@ const Game = ({ game, currentUser }) => {
 
       if ((homeGoal || homeGoal === '') && (!isNaN(value) || value === '')) {
         
-        mutateFixture({data: updateSelectedDay[dayIdx], dayIdx: dayIdx, route: route})
-  
+        mutateFixture({data: updateSelectedDay[dayIdx], dayIdx: dayIdx, route: route});
+        const update = updateTable(fixtureData)
+
+        mutateTable({data: update, league: route})
       } 
     }
 
-    const update = updateTable(fixtureData)
+    
 
-    setTable(update);
+    // setTable(update);
   };
 
   return (
     <div className="game">
+      
       <div className="game-detail">
         <div className="home-team-details">
           <span> {homeTeam.name} </span>
@@ -129,6 +138,7 @@ const Game = ({ game, currentUser }) => {
           <span> {awayTeam.name} </span>
         </div>
       </div>
+      
     </div>
   );
 };

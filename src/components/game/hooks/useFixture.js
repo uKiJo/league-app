@@ -1,6 +1,6 @@
+import toast from "react-hot-toast";
 import { useQueryClient, useMutation } from "react-query";
-import { updateFix } from "../../../firebase/firebase";
-
+import { updateFix, updateTable } from "../../../firebase/firebase";
 
 export const useFixture = (data) => {
   const queryClient = useQueryClient();
@@ -19,7 +19,32 @@ export const MutateLeagueCache = (queryClient) => {
 };
 
 export const useUpdateFixture = (currentUser) => {
-  const { mutate } = useMutation(({data, dayIdx, route}) => updateFix(currentUser, data, dayIdx, route));
+  const success = () =>
+    toast.success("Fixture updated successfully", {
+      duration: 5000,
+      style: {
+        fontSize: "15px",
+        color: "red",
+        border: "1px solid black",
+      },
+    });
+
+  const { mutate } = useMutation(
+    ({ data, dayIdx, route }) => updateFix(currentUser, data, dayIdx, route),
+    {
+      onSuccess: () => {
+        success();
+      },
+    }
+  );
 
   return mutate;
-}
+};
+
+export const useUpdateTable = (currentUser) => {
+  const { mutate } = useMutation(({ data, league }) =>
+    updateTable(currentUser, data, league)
+  );
+
+  return mutate;
+};

@@ -16,15 +16,15 @@ const MyLeagues = ({ currentUser }) => {
 
   const errorAlert = () => toast.error('Something weng wrong, please try again.', {duration: 5000});
 
-  const {data, isLoading, isError, error} = useQuery(["leagues", currentUser.uid],  () => fetchLeagues(currentUser), {
-    enabled: !!currentUser, //////////////////
+  const {data, isLoading, isSuccess, isError, error} = useQuery(["leagues", currentUser.uid],  () => fetchLeagues(currentUser), {
+    enabled: !!currentUser,//////////////////
   });
 
   //add is loading
-  if(isLoading) return <div className="spinner-container"><SpinnerContainer width="50px" /></div> 
+  if(isLoading) return <div className="spinner-container"><SpinnerContainer width="50px" /></div>  
   if(isError) return <Toaster />
+  if(isSuccess) setLeagues(data);
   
-  setLeagues(data)
    
 
   return (

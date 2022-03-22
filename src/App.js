@@ -84,7 +84,7 @@ function App() {
           element={<PremierLeague currentUser={currentUser} />}
         /> */}
         <Route path="custom" element={<Fixture />} />
-        <Route path="table" element={<Table />} />
+        <Route path="table" element={<Table  />} />
         <Route path="myleagues" element={<MyLeagues currentUser={currentUser} />}/>
         <Route path="myleagues/:leagueId" element={ <PremierLeague currentUser={currentUser} /> } />
           

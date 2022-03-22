@@ -92,8 +92,8 @@ export const addFixture = async (userAuth, data, leagueName) => {
       collection(db, "users", `${userAuth.uid}`, "My Leagues")
     );
     querySnapshot.forEach((doc) => {
-      console.log(doc.id)
-      
+      console.log(doc.id);
+
       if (doc.id === leagueName) {
         existingName = true;
       }
@@ -102,7 +102,6 @@ export const addFixture = async (userAuth, data, leagueName) => {
     if (existingName) {
       alert("league name already taken, please choose another name.");
     } else {
-
       await setDoc(
         doc(db, "users", `${userAuth.uid}`, "My Leagues", `${leagueName}`),
         { name: leagueName }
@@ -123,24 +122,29 @@ export const addFixture = async (userAuth, data, leagueName) => {
             id: index + 1,
             data: el,
           }
-          
         );
       });
     }
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-  
 };
 // update day in the database on input change
 export const updateFix = async (userAuth, data, dayIdx, route) => {
   try {
     // const userData = doc(db, "users", `${userAuth.uid}`);
-    const myLeague = doc(db, 'users', `${userAuth.uid}`, 'My Leagues', `${route}`, 'fixture collection', `day: ${dayIdx + 1}`);
+    const myLeague = doc(
+      db,
+      "users",
+      `${userAuth.uid}`,
+      "My Leagues",
+      `${route}`,
+      "fixture collection",
+      `day: ${dayIdx + 1}`
+    );
 
-    console.log('dayidx', dayIdx)
-    console.log('route',route)
-    
+    console.log("dayidx", dayIdx);
+    console.log("route", route);
 
     await updateDoc(myLeague, {
       data: data,
@@ -171,37 +175,67 @@ export const addTable = async (userAuth, tableData) => {
   }
 };
 
-export const updateTable = (userAuth, data) => {
+export const updateTable = async (userAuth, data, leagueName) => {
   try {
-    
-    
+    await setDoc(
+      doc(
+        db,
+        "users",
+        `${userAuth.uid}`,
+        "My Leagues",
+        `${leagueName}`,
+      ), {
+        table: data
+      }
+    );
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-}
+};
 
 export const fetchLeagues = async (userAuth) => {
   try {
-    const myleagues = collection(db, 'users', `${userAuth.uid}`, 'My Leagues');
+    const myleagues = collection(db, "users", `${userAuth.uid}`, "My Leagues");
     const querySnapshot = await getDocs(myleagues);
 
-    console.log(querySnapshot)
+    console.log(querySnapshot);
 
-    
-    return querySnapshot.docs.map(doc => doc.id)
-
-  } catch(e) {
+    return querySnapshot.docs.map((doc) => doc.id);
+  } catch (e) {
     console.error(e);
   }
-}
+};
 
 export const fetchLeague = async (userAuth, route) => {
-  const myLeague = collection(db, 'users', `${userAuth.uid}`, 'My Leagues', `${route}`, 'fixture collection');
+  const myLeague = collection(
+    db,
+    "users",
+    `${userAuth.uid}`,
+    "My Leagues",
+    `${route}`,
+    "fixture collection"
+  );
 
   const querySnapshot = await getDocs(myLeague);
 
-  return querySnapshot.docs.map(doc => doc.data()).sort((a, b) => a.id - b.id).map(doc => doc.data)///////////HERE!!!!!!!!!
-  
+  return querySnapshot.docs
+    .map((doc) => doc.data())
+    .sort((a, b) => a.id - b.id)
+    .map((doc) => doc.data); ///////////HERE!!!!!!!!!
+};
+
+export const fetchTable = async (userAuth, league) => {
+  const table = doc(
+    db,
+    "users",
+    `${userAuth.uid}`,
+    'My Leagues',
+    `${league}`,
+  )
+
+  const docSnap = await getDoc(table);
+
+  return (await docSnap).data();
 }
 
 export const app = initializeApp(firebaseConfig);
