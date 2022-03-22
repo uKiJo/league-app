@@ -18,22 +18,30 @@ import {
 import Game from "../game/game.component";
 import { SpinnerContainer } from "../loading-hoc/loading-hoc.styles";
 
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { ToastBar, Toaster } from "react-hot-toast";
 
 import "./fixture.styles.scss";
 
 const Fixture = ({ currentUser, isCreate }) => {
-  // const fixture = useRecoilValue(fixtureState);
+  
   const [teams, setTeams] = useRecoilState(teamsState);
   const [generate, setGenerate] = useState("Generate");
   const [animate, setAnimate] = useState(null);
   const table = useRecoilValue(tableState);
 
-  const errorAlert = () => toast.error('Something weng wrong, please try again.', {duration: 5000});
+  console.log(currentUser)
 
-  useEffect(() => {
-    errorAlert();
-  })
+  const errorAlert = () =>
+    toast.error("Something weng wrong, please try again.", { duration: 5000 });
+
+    const success = () =>
+    toast.success("Fixture updated successfully", {
+      duration: 5000,
+      style: {
+        fontSize: '15px',
+        color: 'red'
+      },
+    });
 
   const [fixture, setFixture] = useRecoilState(fixtureState);
 
@@ -42,31 +50,36 @@ const Fixture = ({ currentUser, isCreate }) => {
 
   const isAutoFetching = !isCreate;
 
-  
-
   const { data, isError, isLoading } = useQuery(
     ["league", currentUser?.uid, route],
     () => fetchLeague(currentUser, route),
-    { refetchOnWindowFocus: false,
+    {
+      refetchOnWindowFocus: false,
       refetchOnMount: false,
-      enabled: isAutoFetching && !!currentUser }
+      enabled: isAutoFetching && !!currentUser,
+    }
   );
 
-  if(!isCreate) {
-    if (isLoading) return <div className="spinner-container"><SpinnerContainer width='50px' /></div> 
-    if (isError) return <Toaster />
-    
+  if (!isCreate) {
+    if (isLoading)
+      return (
+        <div className="spinner-container">
+          <SpinnerContainer width="50px" />
+        </div>
+      );
+    if (isError) return <Toaster />;
+
     setFixture(data);
   }
-  
-  console.log(fixture)
-  
 
-  console.log("fixture rendered");
+  // console.log(fixture);
+
+  // console.log("fixture rendered");
 
   return (
     <div className="container">
       <div className="bg">
+        <Toaster toastOptions={{duration: 0}} />
         <div className={`${animate ? "animate" : ""} fixture`}>
           {fixture.map((day) => (
             <div key={fixture.indexOf(day)} className="day">

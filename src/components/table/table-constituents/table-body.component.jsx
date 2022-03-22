@@ -1,11 +1,34 @@
 import React from "react";
+import { useQuery } from "react-query";
+import { useParams } from "react-router-dom";
 
 import { useRecoilValue } from "recoil";
+import { fetchTable } from "../../../firebase/firebase";
 import { tableState } from "../../../recoil/atoms/teams.atom";
+import { SpinnerContainer } from "../../loading-hoc/loading-hoc.styles";
 
-const TableBody = ({isMinified}) => {
+const TableBody = ({isMinified, currentUser}) => {
 
-  const table = useRecoilValue(tableState);
+  const param = useParams();
+  const route = param.leagueId;
+
+  console.log(currentUser);
+  console.log(route);
+
+  const { data, isError, isLoading } = useQuery(['table', currentUser, route], () => fetchTable(currentUser, route))
+
+  
+
+  if(isLoading) return (
+    <div className="spinner-container">
+      <SpinnerContainer width="50px" />
+    </div>
+  );
+
+  if(isError) return <h1>ERROR</h1>
+  
+  console.log(data)
+  const {table} = data;
 
   return (
     <>

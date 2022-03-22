@@ -16,8 +16,8 @@ const PremierLeague = ({currentUser}) => {
       <div className="content">
         <Tab
           tabs={[
-            { title: "overview", render: () => <Overview /> },
-            { title: "table", render: () => <Table /> },
+            { title: "overview", render: () => <Overview currentUser={currentUser} /> },
+            { title: "table", render: () => <Table currentUser={currentUser} /> },
             { title: "fixture", render: () =>  <Fixture currentUser={currentUser} /> },
           ]}
         />
