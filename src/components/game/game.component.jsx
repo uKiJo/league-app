@@ -1,17 +1,18 @@
 import React from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient, useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 
 
 import { useRecoilState } from "recoil";
-import { updateFix } from "../../firebase/firebase";
+import { fetchTable, updateFix } from "../../firebase/firebase";
 
-import { MutateLeagueCache, useUpdateFixture, useUpdateTable } from "./hooks/useFixture";
+import { MutateLeagueCache, MutateLeagueTableCache, useUpdateFixture, useUpdateTable } from "./hooks/useFixture";
 
 import { fixtureState, tableState } from "../../recoil/atoms/teams.atom";
 
 import "./game.styles.scss";
 import toast, { Toaster } from "react-hot-toast";
+import { SpinnerContainer } from "../loading-hoc/loading-hoc.styles";
 
 
 const { updateFixture, updateTable, getDayidx } = require('./update');
@@ -19,6 +20,8 @@ const { FixtureParamaters } = require('./data');
 
 
 const Game = ({ game, currentUser }) => {
+
+ 
 
   const param = useParams();
   const route = param.leagueId;
@@ -34,11 +37,16 @@ const Game = ({ game, currentUser }) => {
   const { homeTeam, awayTeam } = game;
   const dayIdx = getDayidx(fixture, game);
 
+  //query functions
+  
+
   //mutation functions
   const mutateFixture = useUpdateFixture(currentUser);
   const mutateTable = useUpdateTable(currentUser);
 
+  //FETCH TABLE IN ORDER TO UPDATE THE EXISTING ONE ON THE DB
 
+  console.log(table)
   const handleHomeScore = ({ target: { value } }) => {
 
     const type = "homeTeam";
@@ -59,7 +67,11 @@ const Game = ({ game, currentUser }) => {
 
         mutateFixture({data: updateSelectedDay[dayIdx], dayIdx: dayIdx, route: route})
         const update = updateTable(fixtureData);
-        setTable(update);
+        
+        const tableCacheUpdate = MutateLeagueTableCache(queryClient);
+        tableCacheUpdate(update, currentUser, route)
+        
+        ;
         mutateTable({data: update, league: route})
       
       }
@@ -88,9 +100,10 @@ const Game = ({ game, currentUser }) => {
       if ((homeGoal || homeGoal === '') && (!isNaN(value) || value === '')) {
         
         mutateFixture({data: updateSelectedDay[dayIdx], dayIdx: dayIdx, route: route});
-        const update = updateTable(fixtureData)
-
-        mutateTable({data: update, league: route})
+        const update = updateTable(fixtureData);
+        const tableCacheUpdate = MutateLeagueTableCache(queryClient);
+        tableCacheUpdate(update, currentUser, route);
+        mutateTable({data: update, league: route});
       } 
     }
 

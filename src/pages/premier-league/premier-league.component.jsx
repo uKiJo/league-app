@@ -10,6 +10,8 @@ import "./premier-league.styles.scss";
 
 const PremierLeague = ({currentUser}) => {
 
+  
+
   return (
     <div className="league-page">
       <Header currentUser={currentUser} />

@@ -109,14 +109,18 @@ const reduceProp = (prop) => {
 
 //create an array containing properties' keys and values
 const propEntries = (arr, idx, dayIdx, propOptions) => {
-   
+  debugger
   let filterNonArrProp = Object.entries(arr[idx]).filter((el) =>
     Array.isArray(el[1])
   );
 
   let propObj = Object.fromEntries(filterNonArrProp);
 
-  let propKeys = Object.keys(propObj);
+  // let propKeys = Object.keys(propObj);
+  let propKeys = ['pointsArr', 'goalsArr', 'gaArr', 'wArr', 'dArr', 'lArr'];
+  //rearrange keys in another way
+
+
 
   let entriesProp = propKeys.map((e, index) => {
     let updatedProp = updateProp(
@@ -216,6 +220,6 @@ function replaceItemAtIndex(arr, index, newValue) {
 const reducer = (previousValue, currentValue) =>
   previousValue + parseInt(currentValue);
 
-module.exports = { updateFixture, getDayidx, getGameidx, updateTable, propEntries, getOptions, arrayOfZeros };
+module.exports = { updateFixture, getDayidx, getGameidx, updateTable, propEntries, getOptions, arrayOfZeros, options };
 
 ///////////////////////////////////////
