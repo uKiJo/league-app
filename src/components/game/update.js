@@ -109,7 +109,7 @@ const reduceProp = (prop) => {
 
 //create an array containing properties' keys and values
 const propEntries = (arr, idx, dayIdx, propOptions) => {
-  debugger
+  
   let filterNonArrProp = Object.entries(arr[idx]).filter((el) =>
     Array.isArray(el[1])
   );
