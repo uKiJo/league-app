@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { useQueryClient, useMutation, useQuery } from "react-query";
+import { useQueryClient, useMutation, useQuery, useQueries } from "react-query";
 import { useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -8,6 +8,7 @@ import {
   addFixture,
   addTable,
   fetchLeague,
+  fetchTable,
 } from "../../firebase/firebase";
 import {
   fixtureState,
@@ -23,23 +24,22 @@ import toast, { ToastBar, Toaster } from "react-hot-toast";
 import "./fixture.styles.scss";
 
 const Fixture = ({ currentUser, isCreate }) => {
-  
   const [teams, setTeams] = useRecoilState(teamsState);
   const [generate, setGenerate] = useState("Generate");
   const [animate, setAnimate] = useState(null);
-  const table = useRecoilValue(tableState);
+  const [table, setTable] = useRecoilState(tableState);
 
-  console.log(currentUser)
+  console.log(currentUser);
 
   const errorAlert = () =>
     toast.error("Something weng wrong, please try again.", { duration: 5000 });
 
-    const success = () =>
+  const success = () =>
     toast.success("Fixture updated successfully", {
       duration: 5000,
       style: {
-        fontSize: '15px',
-        color: 'red'
+        fontSize: "15px",
+        color: "red",
       },
     });
 
@@ -50,15 +50,39 @@ const Fixture = ({ currentUser, isCreate }) => {
 
   const isAutoFetching = !isCreate;
 
-  const { data, isError, isLoading } = useQuery(
-    ["league", currentUser?.uid, route],
-    () => fetchLeague(currentUser, route),
+  // const { tableData } = useQuery(["table", currentUser.uid], () =>
+  //   fetchTable(currentUser, route)
+  // );
+
+  // const { data, isError, isLoading } = useQuery(
+  //   ["league", currentUser?.uid, route],
+  //   () => fetchLeague(currentUser, route),
+  //   {
+  //     refetchOnWindowFocus: false,
+  //     refetchOnMount: false,
+  //     enabled: isAutoFetching && !!currentUser,
+  //   }
+  // );
+
+  const results = useQueries([
     {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      enabled: isAutoFetching && !!currentUser,
+      queryKey: ["league", currentUser.uid, route],
+      queryFn: () => fetchLeague(currentUser, route),
+    },
+    {
+      queryKey: ["table", currentUser.uid, route],
+      queryFn: () => fetchTable(currentUser, route),
     }
-  );
+    
+  ]);
+
+  const isLoading = results.some(result => result.isLoading);
+  const isError = results.some(result => result.isError);
+  const data = results.map(result => result.data);
+  // const {table} = data[1];
+  setTable(data[1].table)
+  console.log(data[1].table);
+
 
   if (!isCreate) {
     if (isLoading)
@@ -69,7 +93,7 @@ const Fixture = ({ currentUser, isCreate }) => {
       );
     if (isError) return <Toaster />;
 
-    setFixture(data);
+    setFixture(data[0]);
   }
 
   // console.log(fixture);
@@ -79,7 +103,7 @@ const Fixture = ({ currentUser, isCreate }) => {
   return (
     <div className="container">
       <div className="bg">
-        <Toaster toastOptions={{duration: 0}} />
+        <Toaster toastOptions={{ duration: 0 }} />
         <div className={`${animate ? "animate" : ""} fixture`}>
           {fixture.map((day) => (
             <div key={fixture.indexOf(day)} className="day">

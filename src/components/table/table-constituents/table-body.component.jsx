@@ -15,9 +15,7 @@ const TableBody = ({isMinified, currentUser}) => {
   console.log(currentUser);
   console.log(route);
 
-  const { data, isError, isLoading } = useQuery(['table', currentUser, route], () => fetchTable(currentUser, route))
-
-  
+  const { data, isError, isLoading } = useQuery(['table', currentUser.uid, route], () => fetchTable(currentUser, route))
 
   if(isLoading) return (
     <div className="spinner-container">
@@ -29,7 +27,7 @@ const TableBody = ({isMinified, currentUser}) => {
   
   console.log(data)
   const {table} = data;
-
+    console.log(table)
   return (
     <>
       {table.map((team) => (

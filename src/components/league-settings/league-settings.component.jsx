@@ -47,7 +47,7 @@ const LeagueSettings = ({ currentUser }) => {
       },
     }
   );
-  const tableMutation = useMutation((data) => addTable(currentUser, data));
+  
 
   
 
